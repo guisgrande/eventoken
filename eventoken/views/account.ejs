@@ -1,8 +1,86 @@
 <%- include partials/header.ejs %>
 
-  <body>
-    <h1><%= title %></h1>
-    <p>Account page</p>
-  </body>
+<body>
+
+  <div class="text-center mt-4">
+      <h5>Account Details</h5>
+  </div>
+
+  <div class="d-flex justify-content-center mt-4 text-white">
+      <!--Connecting to MetaMask -->
+      <div id="readArea" class="bg-dark p-2 m-2 rounded" style="width: 32rem;">
+          <div class="m-4 d-flex flex-column align-items-center">
+              <a id="connectBtn" class="btn btn-primary m-2" onclick="connectMetamask()">CONNECT TO METAMASK</a>
+              <p class="m-2" id="userArea"><strong>Status:</strong> Not connected to Metamask</p>
+          </div>
+      </div>
+  </div>
+
+  <script>
+    // Account variable
+    let account;
+
+    // Ethers.js provider variable
+    let provider = new ethers.providers.Web3Provider(window.ethereum);
+
+    // Connect to the Metamask (Connect Page)
+    const connectMetamask = async () => {
+      if (typeof window.ethereum !== "undefined") {
+          const accounts = await ethereum.request({method: "eth_requestAccounts"});
+          account = accounts[0];
+          document.getElementById("userArea").innerHTML = `<strong>User Account:</strong> ${account}`;
+          // Update ID="connectBtn" to display "Successfully connected"
+          document.getElementById("connectBtn").textContent = "Successfully connected";
+          document.getElementById("connectBtn").classList.remove("btn", "btn-primary");
+          document.getElementById("connectBtn").classList.add("bg-success", "p-2", "rounded");
+      }
+    }
+
+    // Update the account status after verify (Eventlistener)
+    const updateAccount = async () => {
+      if (typeof window.ethereum !== "undefined") {
+          const accounts = await ethereum.request({method: "eth_accounts"});
+          if (accounts.length > 0) {
+              account = accounts[0];
+              document.getElementById("userArea").innerHTML = `<strong>User Account:</strong> ${account}`;
+              // Update ID="connectBtn" to display "Successfully connected"
+              document.getElementById("connectBtn").textContent = "Successfully connected";
+              document.getElementById("connectBtn").classList.remove("btn", "btn-primary");
+              document.getElementById("connectBtn").classList.add("bg-success", "p-2", "rounded");
+          } else {
+              account = null;
+              document.getElementById("userArea").innerHTML = "<strong>Status:</strong> Not connected to MetaMask";
+              // Update ID="connectBtn" to display "CONNECT TO METAMASK"
+              document.getElementById("connectBtn").textContent = "CONNECT TO METAMASK";
+              document.getElementById("connectBtn").classList.remove("bg-success", "p-2", "rounded");
+              document.getElementById("connectBtn").classList.add("btn", "btn-primary");
+          }
+      }
+    }
+
+    // Get Metamask Account - Used to get account
+    async function getMetamask() {
+
+      await provider.send("eth_requestAccounts", []);
+
+      signer = await provider.getSigner();
+
+      console.log("Account address s:", await signer.getAddress());
+      // Run function to update after get the signed account
+      updateNavStatus();
+    }
+
+    // EventListners to Update the account data after load the page
+      window.addEventListener('load', async () => {
+          await updateAccount();
+      });
+
+      window.addEventListener('load', async () => {
+          await getMetamask();
+      });
+
+  </script>
+
+</body>
 
 <%- include partials/footer.ejs %>
