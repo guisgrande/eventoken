@@ -1,8 +1,41 @@
 <%- include partials/header.ejs %>
 
-  <body>
-    <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
-  </body>
+<body>
+
+  <!-- Hero Section -->
+  <div id="hero-container" class="card bg-dark text-white border-0 rounded-0 d-flex flex-row justify-content-around p-4">
+
+    <div id="hero-image" style="width: 100%;" class="d-flex justify-content-center p-4">
+      <img src="images/eventoken-hero.png" class="card-img rounded-0 " alt="Eventoken Logo" style="width: 45%;">
+    </div>
+
+    <div class="card-body d-flex flex-column justify-content-center align-items-center col-sm-5 m-4 p-4">
+      <div class="m-2">
+        <h1><%= title %></h1>
+        <p>Experience the future of event ticketing. Secure, transparent, and easy-to-use, our blockchain-based platform ensures authenticity and fairness in ticket distribution. Welcome to the new era of event participation.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- About Section -->
+  <div class="p-4">
+    <h2>About Eventoken</h2>
+    <p>Eventoken is a groundbreaking platform designed to transform the way you buy, sell, and manage event tickets. Leveraging the power of blockchain technology, Eventoken offers unparalleled security and transparency. Each ticket is minted as a unique non-fungible token (NFT), ensuring its authenticity and traceability. Our smart contracts automate and regulate ticket sales, preventing fraud and scalping while providing a seamless user experience. Whether you're an event organizer or an attendee, Eventoken makes ticketing simple, fair, and secure.</p>
+  </div>
+
+  <!-- Events Section -->
+  <div class="bg-dark text-white p-4">
+    <h2>Events</h2>
+    <p>Explore a world of events with Eventoken. From concerts and sports matches to conferences and theater productions, find tickets to the most exciting happenings around you. Browse our curated list of events, secure your spot with authentic tickets, and get ready for unforgettable experiences. With Eventoken, you can trust that every ticket is genuine and every transaction is transparent.</p>
+  </div>
+
+  <!-- Register / Login Section -->
+  <div class="p-4">
+    <h2>Register/Login</h2>
+    <p>Ready to experience a new standard in event ticketing? Create your Eventoken account now and unlock access to secure, transparent, and fair ticketing. Whether you're looking to attend amazing events or organize them, Eventoken provides the tools you need. Sign up today and be part of the revolution in event management. Don't miss out – your next great event is just a click away!</p>
+  </div>
+
+</body>
 
 <%- include partials/footer.ejs %>
