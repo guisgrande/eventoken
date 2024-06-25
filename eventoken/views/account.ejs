@@ -8,7 +8,7 @@
 
   <div class="d-flex justify-content-center mt-4 text-white">
       <!--Connecting to MetaMask -->
-      <div id="readArea" class="bg-dark p-2 m-2 rounded" style="width: 32rem;">
+      <div id="readArea" class="bg-dark p-2 m-2 rounded d-flex align-items-center flex-column" style="width: 32rem;">
           <div class="m-4 d-flex flex-column align-items-center">
               <a id="connectBtn" class="btn btn-primary m-2" onclick="connectMetamask()">CONNECT TO METAMASK</a>
               <p class="m-2" id="userArea"><strong>Status:</strong> Not connected to Metamask</p>
@@ -68,6 +68,14 @@
                         document.getElementById("connectBtn").textContent = "Successfully connected";
                         document.getElementById("connectBtn").classList.remove("btn", "btn-primary");
                         document.getElementById("connectBtn").classList.add("bg-success", "p-2", "rounded");
+
+                        // Adicionar botão para redirecionar para tickets.ejs
+                        const ticketsButton = document.createElement("a");
+                        ticketsButton.textContent = "Go to My Tickets";
+                        ticketsButton.classList.add("btn", "btn-primary", "m-4");
+                        ticketsButton.href = "/tickets";
+                        document.getElementById("readArea").appendChild(ticketsButton);
+
                     } else {
                         account = null;
                         document.getElementById("userArea").innerHTML = "<strong>Status:</strong> Not connected to MetaMask";
