@@ -24,21 +24,6 @@
     // Ethers.js provider variable
     let provider = new ethers.providers.Web3Provider(window.ethereum);
 
-    // Connect to the Metamask (Connect Page)
-    /*
-    const connectMetamask = async () => {
-      if (typeof window.ethereum !== "undefined") {
-          const accounts = await ethereum.request({method: "eth_requestAccounts"});
-          account = accounts[0];
-          document.getElementById("userArea").innerHTML = `<strong>User Account:</strong> ${account}`;
-          // Update ID="connectBtn" to display "Successfully connected"
-          document.getElementById("connectBtn").textContent = "Successfully connected";
-          document.getElementById("connectBtn").classList.remove("btn", "btn-primary");
-          document.getElementById("connectBtn").classList.add("bg-success", "p-2", "rounded");
-      }
-    }
-    */
-
     // Connect to MetaMask function.
     const connectMetamask = async () => {
       if (typeof window.ethereum !== "undefined") {
@@ -55,26 +40,64 @@
       }
     }
 
-    // Update the account status after verify (Eventlistener)
+    // Update the account status and details after verifying (Eventlistener)
     const updateAccount = async () => {
-      if (typeof window.ethereum !== "undefined") {
-          const accounts = await ethereum.request({method: "eth_accounts"});
-          if (accounts.length > 0) {
-              account = accounts[0];
-              document.getElementById("userArea").innerHTML = `<strong>User Account:</strong> ${account}`;
-              // Update ID="connectBtn" to display "Successfully connected"
-              document.getElementById("connectBtn").textContent = "Successfully connected";
-              document.getElementById("connectBtn").classList.remove("btn", "btn-primary");
-              document.getElementById("connectBtn").classList.add("bg-success", "p-2", "rounded");
-          } else {
-              account = null;
-              document.getElementById("userArea").innerHTML = "<strong>Status:</strong> Not connected to MetaMask";
-              // Update ID="connectBtn" to display "CONNECT TO METAMASK"
-              document.getElementById("connectBtn").textContent = "CONNECT TO METAMASK";
-              document.getElementById("connectBtn").classList.remove("bg-success", "p-2", "rounded");
-              document.getElementById("connectBtn").classList.add("btn", "btn-primary");
-          }
-      }
+        if (typeof window.ethereum !== "undefined") {
+            try {
+                const accounts = await ethereum.request({ method: "eth_accounts" });
+                if (accounts.length > 0) {
+                    const userAddress = accounts[0];
+                    const response = await fetch(`/users?userMetamaskAdr=${userAddress}`);
+                    if (response.ok) {
+                        const userData = await response.json();
+                        account = userData.userMetamaskAdr;
+                        const userName = userData.userName || 'Not provided';
+                        const userNickname = userData.userNickname || 'Not provided';
+                        const userCity = userData.userCity || 'Not provided';
+                        const userEmail = userData.userEmail || 'Not provided';
+                        console.log("Account: " + account);
+                        console.log("userName: " + userName);
+
+                        document.getElementById("userArea").innerHTML = `
+                            <strong>User Account:</strong> ${account}<br>
+                            <strong>Name:</strong> ${userName}<br>
+                            <strong>Nickname:</strong> ${userNickname}<br>
+                            <strong>City:</strong> ${userCity}<br>
+                            <strong>Email:</strong> ${userEmail}
+                        `;
+                        document.getElementById("connectBtn").textContent = "Successfully connected";
+                        document.getElementById("connectBtn").classList.remove("btn", "btn-primary");
+                        document.getElementById("connectBtn").classList.add("bg-success", "p-2", "rounded");
+                    } else {
+                        account = null;
+                        document.getElementById("userArea").innerHTML = "<strong>Status:</strong> Not connected to MetaMask";
+                        document.getElementById("connectBtn").textContent = "CONNECT TO METAMASK";
+                        document.getElementById("connectBtn").classList.remove("bg-success", "p-2", "rounded");
+                        document.getElementById("connectBtn").classList.add("btn", "btn-primary");
+                    }
+                } else {
+                    account = null;
+                    document.getElementById("userArea").innerHTML = "<strong>Status:</strong> Not connected to MetaMask";
+                    document.getElementById("connectBtn").textContent = "CONNECT TO METAMASK";
+                    document.getElementById("connectBtn").classList.remove("bg-success", "p-2", "rounded");
+                    document.getElementById("connectBtn").classList.add("btn", "btn-primary");
+                }
+            } catch (error) {
+                console.error('Error updating account:', error);
+                account = null;
+                document.getElementById("userArea").innerHTML = "<strong>Status:</strong> Not connected to MetaMask";
+                document.getElementById("connectBtn").textContent = "CONNECT TO METAMASK";
+                document.getElementById("connectBtn").classList.remove("bg-success", "p-2", "rounded");
+                document.getElementById("connectBtn").classList.add("btn", "btn-primary");
+            }
+        } else {
+            console.error('MetaMask not detected.');
+            account = null;
+            document.getElementById("userArea").innerHTML = "<strong>Status:</strong> MetaMask not detected";
+            document.getElementById("connectBtn").textContent = "CONNECT TO METAMASK";
+            document.getElementById("connectBtn").classList.remove("bg-success", "p-2", "rounded");
+            document.getElementById("connectBtn").classList.add("btn", "btn-primary");
+        }
     }
 
     // EventListners to Update the account data after load the page
