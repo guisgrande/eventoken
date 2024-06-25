@@ -58,25 +58,9 @@
       }
     }
 
-    // Get Metamask Account - Used to get account
-    async function getMetamask() {
-
-      await provider.send("eth_requestAccounts", []);
-
-      signer = await provider.getSigner();
-
-      console.log("Account address s:", await signer.getAddress());
-      // Run function to update after get the signed account
-      updateNavStatus();
-    }
-
     // EventListners to Update the account data after load the page
       window.addEventListener('load', async () => {
           await updateAccount();
-      });
-
-      window.addEventListener('load', async () => {
-          await getMetamask();
       });
 
   </script>
