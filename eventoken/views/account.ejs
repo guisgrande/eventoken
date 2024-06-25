@@ -17,6 +17,7 @@
   </div>
 
   <script>
+
     // Account variable
     let account;
 
@@ -24,6 +25,7 @@
     let provider = new ethers.providers.Web3Provider(window.ethereum);
 
     // Connect to the Metamask (Connect Page)
+    /*
     const connectMetamask = async () => {
       if (typeof window.ethereum !== "undefined") {
           const accounts = await ethereum.request({method: "eth_requestAccounts"});
@@ -33,6 +35,23 @@
           document.getElementById("connectBtn").textContent = "Successfully connected";
           document.getElementById("connectBtn").classList.remove("btn", "btn-primary");
           document.getElementById("connectBtn").classList.add("bg-success", "p-2", "rounded");
+      }
+    }
+    */
+
+    // Connect to MetaMask function.
+    const connectMetamask = async () => {
+      if (typeof window.ethereum !== "undefined") {
+        try {
+          const accounts = await ethereum.request({ method: "eth_requestAccounts" });
+          const userAddress = accounts[0];
+          // Redirect to manag/adduser.ejs with the MetaMask address as query paramter string
+          window.location.href = `/manag/adduser?userMetamaskAdr=${userAddress}`;
+        } catch (error) {
+          console.error('Error connecting to Metamask:', error);
+        }
+      } else {
+        console.error('MetaMask not detected.');
       }
     }
 
