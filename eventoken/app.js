@@ -3,7 +3,17 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-const ethers = require('ethers');
+const mongoose = require('mongoose');
+// const ethers = require('ethers');
+
+require('dotenv').config();
+
+// MongoDB connection logic
+const mongoURI = process.env.MONGO_URI;
+
+mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => console.log('MongoDB connected'))
+  .catch(err => console.log('Error connecting to MongoDB: ', err));
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
