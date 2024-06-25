@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 const User = require('../models/user');
 
-/* GET home page. */
+/* GET Home page. */
 router.get('/', function(req, res, next) {
   res.render('index', { title: 'Eventoken' });
 });
@@ -17,12 +17,7 @@ router.get('/events', function(req, res, next) {
   res.render('events', { title: 'Eventoken - Events', name:null });
 });
 
-/* GET Events page. */
-router.get('/events', function(req, res, next) {
-  res.render('events', { title: 'Eventoken - Events', name:null });
-});
-
-/* GET and POST Manag - adduser page. */
+/* GET and POST Manag - Adduser page. */
 router.get('/manag/adduser', function(req, res, next) {
   res.render('manag/adduser', { title: 'Eventoken - Add User' });
 });
