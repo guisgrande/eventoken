@@ -69,12 +69,25 @@
                         document.getElementById("connectBtn").classList.remove("btn", "btn-primary");
                         document.getElementById("connectBtn").classList.add("bg-success", "p-2", "rounded");
 
-                        // Adicionar botão para redirecionar para tickets.ejs
+                        // Add a new div to hold the new buttons
+                        const divButton = document.createElement("div");
+                        divButton.classList.add("d-flex", "flex-row", "m-2");
+                        divButton.id = "buttonContainer";
+                        document.getElementById("readArea").appendChild(divButton);
+
+                        // Add button to redirect to tickets.ejs
                         const ticketsButton = document.createElement("a");
                         ticketsButton.textContent = "Go to My Tickets";
-                        ticketsButton.classList.add("btn", "btn-primary", "m-4");
+                        ticketsButton.classList.add("btn", "btn-primary", "btn-sm", "m-2");
                         ticketsButton.href = "/tickets";
-                        document.getElementById("readArea").appendChild(ticketsButton);
+                        document.getElementById("buttonContainer").appendChild(ticketsButton);
+
+                        // Add button to redirect to manag/addevent.ejs
+                        const addEventButton = document.createElement("a");
+                        addEventButton.textContent = "Create New Event";
+                        addEventButton.classList.add("btn", "btn-primary", "btn-sm", "m-2");
+                        addEventButton.href = "/manag/addevent";
+                        document.getElementById("buttonContainer").appendChild(addEventButton);
 
                     } else {
                         account = null;
