@@ -22,6 +22,11 @@ router.get('/tickets', function(req, res, next) {
   res.render('tickets', { title: 'Eventoken - My Tickets', name:null });
 });
 
+/* GET Manag - Addevent page. */
+router.get('/manag/addevent', function(req, res, next) {
+  res.render('manag/addevent', { title: 'Eventoken - Create an Event' });
+});
+
 /* GET and POST Manag - Adduser page. */
 router.get('/manag/adduser', function(req, res, next) {
   res.render('manag/adduser', { title: 'Eventoken - Add User' });
