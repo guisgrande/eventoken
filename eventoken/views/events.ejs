@@ -6,7 +6,6 @@
   <button id="loadMoreBtn" class="btn btn-primary mt-2" onclick="loadMoreEvents()">Load More</button>
 
   <script>
-      const contractAddress = '0xec716657f30b72c899f7789137dff1e0b7ae298d';
       let currentIndex = 1; // Start index here.
       const eventsPerPage = 6;
 
@@ -65,12 +64,16 @@
                   throw new Error('Invalid quantity.');
               }
 
+              console.log("Event ID:" + eventId)
               // Get the event price directly from the contract
               const event = await contract.events(eventId);
               const ticketPrice = event.price;
+              console.log("Event:" + event)
+              console.log("Ticket price:" + ticketPrice)
 
               // Calculate the total price of the tickets the user wants to buy
               const totalPrice = ticketPrice.mul(quantity);
+              console.log("Total price:" + totalPrice)
 
               // Call to the purchaseTickets function from contract
               const tx = await contract.purchaseTickets(eventId, quantity, { value: totalPrice });
