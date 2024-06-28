@@ -1,8 +1,137 @@
 <%- include partials/header.ejs %>
 
-  <body>
-    <h1><%= title %></h1>
-    <p>My Ticekts page</p>
-  </body>
+<body>
+  <h1><%= title %></h1>
+  <p>My Tickets page</p>
+
+  <!-- Elemento para exibir a lista de tickets -->
+  <ul id="ticketList" class="list-group"></ul>
+
+</body>
+
+<script>
+  console.log("OUTSIDE")
+  async function loadTickets() {
+    try {
+      await window.ethereum.request({ method: 'eth_requestAccounts' });
+
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
+      console.log("Signer: " + signer)
+
+      // Obter o endereço formatado do usuário
+      const userAddress = await signer.getAddress();
+      console.log("User add: " + userAddress)
+
+      // Formatar o endereço do contrato
+      const contractAddress = ethers.utils.getAddress('0x86e58c90c3232ed333be6a3ef3482194873a3537');
+      
+      const contract = new ethers.Contract(contractAddress, contractABI, signer);
+
+      // Obter todos os tickets do usuário
+      const ticketIds = await contract.getUserAllTickets(userAddress);
+      console.log("Tickets IDS: " + ticketIds)
+
+      // Lista para armazenar informações detalhadas de cada ticket
+      const ticketDetails = [];
+      console.log("Tickets Details before loop: " + ticketDetails)
+
+      // Coletar informações detalhadas de cada ticket
+      for (let i = 0; i < ticketIds.length; i++) {
+        const ticketId = ticketIds[i];
+        const eventId = await contract.getEventIdByTicket(ticketId)+1;
+        console.log("Event ID: " + eventId)
+        
+        // Obter os detalhes do evento utilizando getEventDetails
+        const eventDetails = await contract.getEventDetails(eventId);
+        console.log("Event Details: " + eventDetails)
+        // Construir o objeto com informações detalhadas do ticket
+        const ticketInfo = {
+          id: ticketId,
+          eventName: eventDetails[1],
+          eventDetails: eventDetails[2],
+          totalTickets: eventDetails[3],
+          price: eventDetails[4],
+          eventImage: eventDetails[5],
+          ticketImage: eventDetails[6],
+          ticketsSold: eventDetails[8]
+        };
+
+        ticketDetails.push(ticketInfo);
+      }
+      console.log("Tickets Details after loop: " + ticketDetails)
+
+      // Renderizar os tickets na página
+      const ticketList = document.getElementById('ticketList');
+      ticketList.innerHTML = '';
+
+      ticketDetails.forEach((ticket) => {
+    const listItem = document.createElement('li');
+    listItem.classList.add('list-group-item');
+
+    // Criar elementos para mostrar as informações do ticket
+    const eventNameElement = document.createElement('p');
+    eventNameElement.textContent = `Event Name: ${ticket.eventName}`;
+
+    const eventDetailsElement = document.createElement('p');
+    eventDetailsElement.textContent = `Details: ${ticket.eventDetails}`;
+
+    const ticketIdElement = document.createElement('p');
+    ticketIdElement.textContent = `Ticket ID: ${ticket.id}`;
+
+    const totalTicketsElement = document.createElement('p');
+    totalTicketsElement.textContent = `Total Tickets: ${ticket.totalTickets}`;
+
+    const priceElement = document.createElement('p');
+    priceElement.textContent = `Price: ${ethers.utils.formatEther(ticket.price)} ETH`;
+
+    const ticketsSoldElement = document.createElement('p');
+    ticketsSoldElement.textContent = `Tickets Sold: ${ticket.ticketsSold}`;
+
+    const eventImageElement = document.createElement('img');
+    eventImageElement.src = ticket.eventImage;
+    eventImageElement.alt = 'Event Image';
+    eventImageElement.style.maxWidth = '100px'; // Ajustar conforme necessário
+
+    const ticketImageElement = document.createElement('img');
+    ticketImageElement.src = ticket.ticketImage;
+    ticketImageElement.alt = 'Ticket Image';
+    ticketImageElement.style.maxWidth = '100px'; // Ajustar conforme necessário
+
+    // Adicionar elementos à lista de tickets
+    listItem.appendChild(eventNameElement);
+    listItem.appendChild(eventDetailsElement);
+    listItem.appendChild(ticketIdElement);
+    listItem.appendChild(totalTicketsElement);
+    listItem.appendChild(priceElement);
+    listItem.appendChild(ticketsSoldElement);
+    listItem.appendChild(eventImageElement);
+    listItem.appendChild(ticketImageElement);
+
+    ticketList.appendChild(listItem);
+});
+
+ticketDetails.forEach((ticket) => {
+    console.log(`Ticket ID: ${ticket.id}`);
+    console.log(`Event Name: ${ticket.eventName}`);
+    console.log(`Details: ${ticket.eventDetails}`);
+    console.log(`Total Tickets: ${ticket.totalTickets}`);
+    console.log(`Price: ${ethers.utils.formatEther(ticket.price)} ETH`);
+    console.log(`Tickets Sold: ${ticket.ticketsSold}`);
+    console.log(`Event Image: ${ticket.eventImage}`);
+    console.log(`Ticket Image: ${ticket.ticketImage}`);
+    console.log('-----------------------------------');
+});
+
+
+    } catch (error) {
+      console.error('Erro ao carregar tickets:', error);
+      alert('Erro ao carregar tickets. Verifique o console para mais detalhes.');
+    }
+  }
+
+  // Chamar a função para carregar os tickets ao carregar a página
+  window.onload = loadTickets;
+</script>
 
 <%- include partials/footer.ejs %>
