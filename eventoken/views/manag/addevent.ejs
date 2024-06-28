@@ -2,75 +2,73 @@
 <%- include('../partials/header.ejs') %>
 
 <body>
-  <div class="container mt-4 p-4">
-    <h2>Create New Event</h2>
-    <form id="eventForm">
+
+  <h1>Add Event Form</h1>
+  <form id="eventForm" onsubmit="return false;">
       <div class="mb-3">
-        <label for="eventName" class="form-label">Event Name</label>
-        <input type="text" class="form-control" id="eventName" name="eventName" required>
+          <label for="eventName" class="form-label">Event Name</label>
+          <input type="text" class="form-control" id="eventName" name="eventName" required>
       </div>
       <div class="mb-3">
-        <label for="details" class="form-label">Details</label>
-        <textarea class="form-control" id="details" name="details" rows="3" required></textarea>
+          <label for="details" class="form-label">Details</label>
+          <textarea class="form-control" id="details" name="details" rows="3" required></textarea>
       </div>
       <div class="row">
-        <div class="col mb-3">
-          <label for="totalTickets" class="form-label">Total Tickets</label>
-          <input type="number" class="form-control" id="totalTickets" name="totalTickets" required>
-        </div>
-        <div class="col mb-3">
-          <label for="price" class="form-label">Price</label>
-          <input type="number" class="form-control" id="price" name="price" required>
-        </div>
+          <div class="col mb-3">
+              <label for="totalTickets" class="form-label">Total Tickets</label>
+              <input type="number" class="form-control" id="totalTickets" name="totalTickets" required>
+          </div>
+          <div class="col mb-3">
+              <label for="price" class="form-label">Price (ETH)</label>
+              <input type="number" step="any" class="form-control" id="price" name="price" required>
+          </div>
       </div>
       <div class="row">
-        <div class="col mb-3">
-          <label for="eventImage" class="form-label">Event Image (IPFS URL Link)</label>
-          <input type="url" class="form-control" id="eventImage" name="eventImage" required>
-        </div>
-        <div class="col mb-3">
-          <label for="ticketImage" class="form-label">Ticket Image (IPFS URL Link)</label>
-          <input type="url" class="form-control" id="ticketImage" name="ticketImage" required>
-        </div>
+          <div class="col mb-3">
+              <label for="eventImage" class="form-label">Event Image (IPFS URL Link)</label>
+              <input type="url" class="form-control" id="eventImage" name="eventImage" required>
+          </div>
+          <div class="col mb-3">
+              <label for="ticketImage" class="form-label">Ticket Image (IPFS URL Link)</label>
+              <input type="url" class="form-control" id="ticketImage" name="ticketImage" required>
+          </div>
       </div>
-      <button type="submit" class="btn btn-primary mt-2">Create Event</button>
-    </form>
-  </div>
+      <button type="submit" class="btn btn-primary mt-2" onclick="addEvent()">Create Event</button>
+  </form>
 
-  <script>
-    document.getElementById('eventForm').addEventListener('submit', async function(e) {
-      e.preventDefault();
+<script>
+    async function addEvent() {
+        try {
+            // Solicita a conexão com a carteira do usuário
+            await window.ethereum.request({ method: 'eth_requestAccounts' });
 
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-      const accounts = await provider.send('eth_requestAccounts', []);
-      const eventCreatorAddress = accounts[0];
+            const provider = new ethers.providers.Web3Provider(window.ethereum);
+            const signer = provider.getSigner();
+            const contractAddress = '0xec716657f30b72c899f7789137dff1e0b7ae298d';
 
-      const formData = new FormData(e.target);
-      formData.append('eventCreatorAddress', eventCreatorAddress);
+            // Working manual pasting the ABI
+            const contractABI = [];
+            
+            const contract = new ethers.Contract(contractAddress, contractABI, signer);
 
-      const data = Object.fromEntries(formData.entries());
+            const formData = new FormData(document.getElementById('eventForm'));
+            const eventName = formData.get('eventName');
+            const details = formData.get('details');
+            const totalTickets = parseInt(formData.get('totalTickets'));
+            const price = ethers.utils.parseEther(formData.get('price'));
+            const eventImage = formData.get('eventImage');
+            const ticketImage = formData.get('ticketImage');
 
-      fetch('/manag/addevent', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-      })
-      .then(response => response.json())
-      .then(data => {
-        if (data.success) {
-          alert('Event created successfully!');
-          window.location.href = '/events';
-        } else {
-          alert('Error creating event: ' + data.message);
+            const tx = await contract.createEvent(eventName, details, totalTickets, price, eventImage, ticketImage);
+            await tx.wait();
+
+            alert('Evento adicionado com sucesso!');
+        } catch (error) {
+            console.error('Erro ao adicionar evento:', error);
+            alert('Erro ao adicionar evento. Verifique o console para mais detalhes.');
         }
-      })
-      .catch(error => {
-        console.error('Error:', error);
-      });
-    });
-  </script>
+    }
+</script>
 
 </body>
 
