@@ -1,8 +1,59 @@
 <%- include partials/header.ejs %>
 
-  <body>
-    <h1><%= title %></h1>
-    <p>Events page</p>
-  </body>
+<body>
+  <h1>Event List</h1>
+  <div id="eventsContainer"></div>
+  <button id="loadMoreBtn" class="btn btn-primary mt-2" onclick="loadMoreEvents()">Load More</button>
+
+  <script>
+      const contractAddress = '0xec716657f30b72c899f7789137dff1e0b7ae298d';
+      let currentIndex = 1;
+      const eventsPerPage = 6;
+
+      async function loadMoreEvents() {
+          try {
+              await window.ethereum.request({ method: 'eth_requestAccounts' });
+              const provider = new ethers.providers.Web3Provider(window.ethereum);
+              const signer = provider.getSigner();
+
+              const contractABI = [];
+              const contract = new ethers.Contract(contractAddress, contractABI, signer);
+
+              const totalEvents = await contract.nextEventId();
+              const eventsContainer = document.getElementById('eventsContainer');
+
+              for (let i = currentIndex; i < currentIndex + eventsPerPage && i < totalEvents; i++) {
+                  const event = await contract.events(i);
+                  const ticketsAvailable = await contract.ticketsAvailable(i);
+
+                  const eventElement = document.createElement('div');
+                  eventElement.classList.add('event', 'm-4', 'border');
+                  eventElement.innerHTML = `
+                      <h2>${event.name}</h2>
+                      <p>${event.details}</p>
+                      <p>Total Tickets: ${event.totalTickets}</p>
+                      <p>Price: ${ethers.utils.formatEther(event.price)} ETH</p>
+                      <p>Tickets Sold: ${event.ticketsSold}</p>
+                      <p>Tickets Available: ${ticketsAvailable}</p>
+                      <img src="${event.eventImage}" alt="Event Image" style="max-width: 100px;">
+                      <img src="${event.ticketImage}" alt="Ticket Image" style="max-width: 100px;">
+                  `;
+                  eventsContainer.appendChild(eventElement);
+              }
+
+              currentIndex += eventsPerPage;
+              if (currentIndex >= totalEvents) {
+                  document.getElementById('loadMoreBtn').style.display = 'none';
+              }
+          } catch (error) {
+              console.error('Erro ao carregar eventos:', error);
+              alert('Erro ao carregar eventos. Verifique o console para mais detalhes.');
+          }
+      }
+
+      // Carrega os primeiros eventos quando a página é carregada
+      document.addEventListener('DOMContentLoaded', loadMoreEvents);
+  </script>
+</body>
 
 <%- include partials/footer.ejs %>
