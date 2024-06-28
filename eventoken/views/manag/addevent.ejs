@@ -45,9 +45,6 @@
             const provider = new ethers.providers.Web3Provider(window.ethereum);
             const signer = provider.getSigner();
             const contractAddress = '0xec716657f30b72c899f7789137dff1e0b7ae298d';
-
-            // Working manual pasting the ABI
-            const contractABI = [];
             
             const contract = new ethers.Contract(contractAddress, contractABI, signer);
 
