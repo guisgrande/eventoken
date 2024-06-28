@@ -61,4 +61,9 @@ router.post('/manag/adduser', async (req, res) => {
   }
 });
 
+/* GET Manag - Addevent page. */
+router.get('/manag/addevent', function(req, res, next) {
+  res.render('manag/addevent', { title: 'Eventoken - Create Event' });
+});
+
 module.exports = router;
