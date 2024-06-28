@@ -39,7 +39,7 @@
 <script>
     async function addEvent() {
         try {
-            // Solicita a conexão com a carteira do usuário
+            // Requests a connection to the user's wallet
             await window.ethereum.request({ method: 'eth_requestAccounts' });
 
             const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -59,10 +59,10 @@
             const tx = await contract.createEvent(eventName, details, totalTickets, price, eventImage, ticketImage);
             await tx.wait();
 
-            alert('Evento adicionado com sucesso!');
+            alert('Event added with success!');
         } catch (error) {
-            console.error('Erro ao adicionar evento:', error);
-            alert('Erro ao adicionar evento. Verifique o console para mais detalhes.');
+            console.error('Error trying to add new event: ', error);
+            alert('Error trying to add new event.');
         }
     }
 </script>

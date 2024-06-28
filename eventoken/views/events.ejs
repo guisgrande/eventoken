@@ -7,7 +7,7 @@
 
   <script>
       const contractAddress = '0xec716657f30b72c899f7789137dff1e0b7ae298d';
-      let currentIndex = 1; // Começa do índice 1
+      let currentIndex = 1; // Start index here.
       const eventsPerPage = 6;
 
       async function loadMoreEvents() {
@@ -20,7 +20,7 @@
 
               const totalEvents = await contract.nextEventId();
               const eventsContainer = document.getElementById('eventsContainer');
-              eventsContainer.innerHTML = ''; // Limpa o conteúdo anterior
+              eventsContainer.innerHTML = ''; // Clears previous content
 
               for (let i = currentIndex; i < currentIndex + eventsPerPage && i < totalEvents; i++) {
                   const event = await contract.events(i);
@@ -47,8 +47,8 @@
                   document.getElementById('loadMoreBtn').style.display = 'none';
               }
           } catch (error) {
-              console.error('Erro ao carregar eventos:', error);
-              alert('Erro ao carregar eventos. Verifique o console para mais detalhes.');
+              console.error('Error loading events: ', error);
+              alert('Error loading events.');
           }
       }
 
@@ -59,36 +59,32 @@
 
               const contract = new ethers.Contract(contractAddress, contractABI, signer);
 
-              // Solicita a quantidade desejada de tickets ao usuário
-              const quantity = prompt('Quantos tickets você deseja comprar?', '1');
+              // Requests the desired number of tickets from the user
+              const quantity = prompt('How many tickets you want to buy?', '1');
               if (!quantity || isNaN(quantity)) {
-                  throw new Error('Quantidade inválida');
+                  throw new Error('Invalid quantity.');
               }
 
-              // Efetua a compra de tickets chamando a função do contrato
-              // const tx = await contract.purchaseTickets(eventId, quantity, { value: 0 });
-              // await tx.wait();
-
-              // Obter o preço do evento diretamente do contrato
-              const event = await contract.events(eventId); // Supondo que existe uma função `events` que retorna os detalhes do evento
+              // Get the event price directly from the contract
+              const event = await contract.events(eventId);
               const ticketPrice = event.price;
 
-              // Calcular o preço total dos tickets que o usuário deseja comprar
+              // Calculate the total price of the tickets the user wants to buy
               const totalPrice = ticketPrice.mul(quantity);
 
-              // Chamada à função purchaseTickets
+              // Call to the purchaseTickets function from contract
               const tx = await contract.purchaseTickets(eventId, quantity, { value: totalPrice });
               await tx.wait();
               
-              alert(`Tickets comprados com sucesso para o evento ${eventId}!`);
-              loadMoreEvents(); // Recarrega a lista de eventos após a compra
+              alert(`Tickets successfully bought for the event! Event ID: ${eventId}.`);
+              loadMoreEvents(); // Reloads the event list after purchase
           } catch (error) {
-              console.error('Erro ao comprar tickets:', error);
-              alert('Erro ao comprar tickets. Verifique o console para mais detalhes.');
+              console.error('Error while buying tickets: ', error);
+              alert('Error while buying tickets.');
           }
       }
 
-      // Carrega os primeiros eventos quando a página é carregada
+      // Loads the first events when the page is loaded
       document.addEventListener('DOMContentLoaded', loadMoreEvents);
   </script>
 </body>
