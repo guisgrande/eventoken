@@ -8,7 +8,7 @@
 
   <div class="d-flex justify-content-center mt-4 text-white">
       <!--Connecting to MetaMask -->
-      <div id="readArea" class="bg-dark p-2 m-2 rounded d-flex align-items-center flex-column" style="width: 32rem;">
+      <div id="readArea" class="bg-dark p-2 m-2 rounded d-flex align-items-center flex-column" style="width: 40rem;">
           <div class="m-4 d-flex flex-column align-items-center">
               <a id="connectBtn" class="btn btn-primary m-2" onclick="connectMetamask()">CONNECT TO METAMASK</a>
               <p class="m-2" id="userArea"><strong>Status:</strong> Not connected to Metamask</p>
@@ -67,7 +67,7 @@
                         `;
                         document.getElementById("connectBtn").textContent = "Successfully connected";
                         document.getElementById("connectBtn").classList.remove("btn", "btn-primary");
-                        document.getElementById("connectBtn").classList.add("bg-success", "p-2", "rounded");
+                        document.getElementById("connectBtn").classList.add("third-color", "p-2", "rounded");
 
                         // Add a new div to hold the new buttons
                         const divButton = document.createElement("div");
@@ -78,14 +78,14 @@
                         // Add button to redirect to tickets.ejs
                         const ticketsButton = document.createElement("a");
                         ticketsButton.textContent = "Go to My Tickets";
-                        ticketsButton.classList.add("btn", "btn-primary", "btn-sm", "m-2");
+                        ticketsButton.classList.add("btn", "button-one", "btn-sm", "m-2");
                         ticketsButton.href = "/tickets";
                         document.getElementById("buttonContainer").appendChild(ticketsButton);
 
                         // Add button to redirect to manag/addevent.ejs
                         const addEventButton = document.createElement("a");
                         addEventButton.textContent = "Create New Event";
-                        addEventButton.classList.add("btn", "btn-primary", "btn-sm", "m-2");
+                        addEventButton.classList.add("btn", "button-one", "btn-sm", "m-2");
                         addEventButton.href = "/manag/addevent";
                         document.getElementById("buttonContainer").appendChild(addEventButton);
 
