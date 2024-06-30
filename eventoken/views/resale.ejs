@@ -15,17 +15,14 @@
 
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const signer = provider.getSigner();
-      console.log("Signer: " + signer);
         
       // Obter o endereço formatado do usuário
       const userAddress = await signer.getAddress();
-      console.log("User add: " + userAddress);
       
       const contract = new ethers.Contract(contractAddress, contractABI, signer);
 
       // Chamar a função getAllTicketsForSale para obter todos os tickets à venda
       const ticketsForSale = await contract.getAllTicketsForSale();
-      console.log("Tickets for sale: ", ticketsForSale);
 
       // Lista para armazenar informações detalhadas de cada ticket à venda
       const resaleTicketDetails = [];
@@ -54,8 +51,6 @@
           resaleTicketDetails.push(ticketInfo);
         }
       }
-
-      console.log("Resale Tickets Details: ", resaleTicketDetails);
 
       // Renderizar os tickets à venda na página
       const resaleTicketList = document.getElementById('resaleTicketList');
@@ -91,6 +86,29 @@
         ticketImageElement.alt = 'Ticket Image';
         ticketImageElement.style.maxWidth = '100px';
 
+        // Botão de compra
+        const buyButton = document.createElement('button');
+        buyButton.textContent = 'Buy Ticket';
+        buyButton.classList.add('btn', 'btn-primary', 'mt-2');
+        
+        buyButton.onclick = async () => {
+          try {
+            const gasLimit = 300000; // Defina um valor adequado para o limite de gás aqui
+
+            await contract.buyTicket(ticket.id, {
+              value: ticket.price,
+              gasLimit: gasLimit
+            });
+
+            // Transação bem-sucedida
+            console.log("Ticket purchased successfully!");
+          } catch (error) {
+            // Tratamento de erros
+            console.error("Error purchasing ticket:", error);
+            alert("Error purchasing ticket. Check console for details.");
+          }
+        };
+
         // Adicionar elementos à lista de tickets à venda
         listItem.appendChild(eventNameElement);
         listItem.appendChild(eventDetailsElement);
@@ -99,13 +117,14 @@
         listItem.appendChild(sellerElement);
         listItem.appendChild(eventImageElement);
         listItem.appendChild(ticketImageElement);
+        listItem.appendChild(buyButton);
 
         resaleTicketList.appendChild(listItem);
       });
 
     } catch (error) {
-      console.error('Erro ao carregar tickets à venda:', error);
-      alert('Erro ao carregar tickets à venda. Verifique o console para mais detalhes.');
+      console.error('Error loading tickets for sale:', error);
+      alert('Error loading tickets for sale. Check console for more details.');
     }
   } // end loadResaleTickets
 
