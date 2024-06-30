@@ -1,7 +1,7 @@
 <%- include partials/header.ejs %>
 
 <body>
-  <h1 class="text-center m-4"><%= title %></h1>
+  <h1 class="text-center m-4"><i class="bi bi-receipt-cutoff first-color"></i> Resale Tickets</h1>
   <p class="text-center m-4">Your second chance to get the ticket for the Events.</p>
 
   <!-- Elemento para exibir a lista de tickets para revenda -->
@@ -103,7 +103,7 @@
         // Botão de compra
         const buyButton = document.createElement('button');
         buyButton.textContent = 'Buy Ticket';
-        buyButton.classList.add('btn', 'btn-primary', 'mt-2');
+        buyButton.classList.add('btn', 'button-one', 'mt-2');
         
         buyButton.onclick = async () => {
           try {

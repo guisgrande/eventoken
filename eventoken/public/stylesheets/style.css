@@ -7,14 +7,18 @@ a {
 }
 
 .first-color {
-  background-color: #00F6FF;
+  color: #00F6FF;
 }
 
 .second-color {
-  background-color: #28BDC2;
+  color: #28BDC2;
 }
 
 .third-color {
+  color: #005A5D;
+}
+
+.third-back {
   background-color: #005A5D;
 }
 
@@ -38,4 +42,12 @@ a {
   background-color: #005A5D;
   border: 1px solid white;
   color: white;
+}
+
+.button-three {
+  color: #00F6FF !important;
+}
+
+.button-three:hover {
+  color: #005A5D !important;
 }
