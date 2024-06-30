@@ -68,12 +68,18 @@
               // Get the event price directly from the contract
               const event = await contract.events(eventId);
               const ticketPrice = event.price;
-              console.log("Event:" + event)
-              console.log("Ticket price:" + ticketPrice)
+              console.log("Event:" + event);
+              console.log("Ticket price:" + ticketPrice);
 
               // Calculate the total price of the tickets the user wants to buy
               const totalPrice = ticketPrice.mul(quantity);
-              console.log("Total price:" + totalPrice)
+              console.log("Total price:" + totalPrice);
+
+              // Antes de enviar a transação, configure um limite de gás e preço de gás suficientes
+              // const overrides = {
+                  // gasLimit: ethers.utils.hexlify(500000), // Ajuste conforme necessário
+                  // gasPrice: ethers.utils.parseUnits('100', 'gwei'), // Ajuste conforme necessário
+              //};
 
               // Call to the purchaseTickets function from contract
               const tx = await contract.purchaseTickets(eventId, quantity, { value: totalPrice });
