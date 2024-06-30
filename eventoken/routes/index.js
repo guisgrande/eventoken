@@ -22,6 +22,11 @@ router.get('/events', function(req, res, next) {
   res.render('events', { title: 'Eventoken - Events', name:null });
 });
 
+/* GET Resale page. */
+router.get('/resale', function(req, res, next) {
+  res.render('resale', { title: 'Eventoken - Resale Tickets', name:null });
+});
+
 /* GET Ticket page. */
 router.get('/tickets', function(req, res, next) {
   res.render('tickets', { title: 'Eventoken - My Tickets', name:null });
