@@ -7,6 +7,30 @@
   <!-- Elemento para exibir a lista de tickets -->
   <ul id="ticketList" class="list-group"></ul>
 
+    <!-- Modal para inserir o endereço do destinatário -->
+    <div class="modal" id="transferModal" tabindex="-1" role="dialog">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Transfer Ticket</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form id="transferForm">
+              <div class="form-group">
+                <label for="recipientAddress">Recipient Address</label>
+                <input type="text" class="form-control" id="recipientAddress" required>
+                <input type="hidden" id="transferTicketId">
+              </div>
+              <button type="submit" class="btn btn-primary">Transfer</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
 </body>
 
 <script>
@@ -22,9 +46,6 @@
       // Obter o endereço formatado do usuário
       const userAddress = await signer.getAddress();
       console.log("User add: " + userAddress)
-
-      // Formatar o endereço do contrato
-      const contractAddress = ethers.utils.getAddress('0x86e58c90c3232ed333be6a3ef3482194873a3537');
       
       const contract = new ethers.Contract(contractAddress, contractABI, signer);
 
@@ -98,6 +119,11 @@
     ticketImageElement.alt = 'Ticket Image';
     ticketImageElement.style.maxWidth = '100px'; // Ajustar conforme necessário
 
+    const transferButton = document.createElement('button');
+    transferButton.classList.add('btn', 'btn-primary');
+    transferButton.textContent = 'Transfer Ticket';
+    transferButton.onclick = () => openTransferModal(ticket.id);
+
     // Adicionar elementos à lista de tickets
     listItem.appendChild(eventNameElement);
     listItem.appendChild(eventDetailsElement);
@@ -107,6 +133,7 @@
     listItem.appendChild(ticketsSoldElement);
     listItem.appendChild(eventImageElement);
     listItem.appendChild(ticketImageElement);
+    listItem.appendChild(transferButton);
 
     ticketList.appendChild(listItem);
 });
@@ -129,6 +156,36 @@ ticketDetails.forEach((ticket) => {
       alert('Erro ao carregar tickets. Verifique o console para mais detalhes.');
     }
   }
+
+  function openTransferModal(ticketId) {
+    const transferModal = document.getElementById('transferModal');
+    const transferTicketId = document.getElementById('transferTicketId');
+    transferTicketId.value = ticketId;
+    $(transferModal).modal('show');
+  }
+
+  async function transferTicket(event) {
+    event.preventDefault();
+    const transferForm = document.getElementById('transferForm');
+    const recipientAddress = transferForm.recipientAddress.value;
+    const ticketId = transferForm.transferTicketId.value;
+
+    try {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
+      const contractAddress = ethers.utils.getAddress('0x86e58c90c3232ed333be6a3ef3482194873a3537');
+      const contract = new ethers.Contract(contractAddress, contractABI, signer);
+
+      await contract.transferTicket(recipientAddress, ticketId);
+      alert('Ticket transferred successfully!');
+      loadTickets(); // Reload tickets after transfer
+    } catch (error) {
+      console.error('Error transferring ticket:', error);
+      alert('Error transferring ticket. Check the console for more details.');
+    }
+  }
+
+  document.getElementById('transferForm').addEventListener('submit', transferTicket);
 
   // Chamar a função para carregar os tickets ao carregar a página
   window.onload = loadTickets;
