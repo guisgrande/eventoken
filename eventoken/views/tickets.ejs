@@ -1,11 +1,15 @@
 <%- include partials/header.ejs %>
 
 <body>
-  <h1><%= title %></h1>
-  <p>My Tickets page</p>
+  <div class="text-center m-4">
+    <h1><%= title %></h1>
+    <p>My Tickets page</p>
+  </div>
 
   <!-- Elemento para exibir a lista de tickets -->
-  <ul id="ticketList" class="list-group"></ul>
+  <div class="d-flex justify-content-center">
+    <ul id="ticketList" class="list-group col-9"></ul>
+  </div>
 
     <!-- Modal para inserir o endereço do destinatário -->
     <div class="modal" id="transferModal" tabindex="-1" role="dialog">
@@ -120,58 +124,68 @@
       ticketDetails.forEach((ticket) => {
         if (ticket.id > 0) {
           const listItem = document.createElement('li');
-          listItem.classList.add('list-group-item');
+          listItem.classList.add('list-group-item', 'm-2', 'bg-dark', 'text-white', 'rounded');
 
-          // Criar elementos para mostrar as informações do ticket
-          const eventNameElement = document.createElement('p');
+          const divRow = document.createElement('div');
+          divRow.classList.add('row');
+
+          const divLeft = document.createElement('div');
+          divLeft.classList.add('col-7');
+
+          const divRight = document.createElement('div');
+          divRight.classList.add('col-5');
+
+          // Criar elementos para mostrar as informações do ticket à venda
+          const eventNameElement = document.createElement('h3');
+          eventNameElement.classList.add('mt-2')
           eventNameElement.textContent = `Event Name: ${ticket.eventName}`;
 
           const eventDetailsElement = document.createElement('p');
           eventDetailsElement.textContent = `Details: ${ticket.eventDetails}`;
 
           const ticketIdElement = document.createElement('p');
+          ticketIdElement.classList.add('m-2');
           ticketIdElement.textContent = `Ticket ID: ${ticket.id}`;
 
-          const totalTicketsElement = document.createElement('p');
-          totalTicketsElement.textContent = `Total Tickets: ${ticket.totalTickets}`;
-
           const priceElement = document.createElement('p');
+          priceElement.classList.add('m-2')
           priceElement.textContent = `Price: ${ethers.utils.formatEther(ticket.price)} ETH`;
-
-          const ticketsSoldElement = document.createElement('p');
-          ticketsSoldElement.textContent = `Tickets Sold: ${ticket.ticketsSold}`;
 
           const eventImageElement = document.createElement('img');
           eventImageElement.src = ticket.eventImage;
           eventImageElement.alt = 'Event Image';
-          eventImageElement.style.maxWidth = '100px';
+          eventImageElement.style.maxWidth = '300px';
 
           const ticketImageElement = document.createElement('img');
           ticketImageElement.src = ticket.ticketImage;
+          ticketImageElement.classList.add('m-2')
           ticketImageElement.alt = 'Ticket Image';
-          ticketImageElement.style.maxWidth = '100px';
+          ticketImageElement.style.maxWidth = '150px';
 
           const transferButton = document.createElement('button');
-          transferButton.classList.add('btn', 'btn-primary');
+          transferButton.classList.add('btn', 'button-one', 'm-2');
           transferButton.textContent = 'Transfer Ticket';
           transferButton.onclick = () => openTransferModal(ticket.id);
 
           const resaleButton = document.createElement('button');
-          resaleButton.classList.add('btn', 'btn-primary');
+          resaleButton.classList.add('btn', 'button-one', 'm-2');
           resaleButton.textContent = 'Sell Ticket';
           resaleButton.onclick = () => openSellModal(ticket.id);
 
           // Adicionar elementos à lista de tickets
-          listItem.appendChild(eventNameElement);
-          listItem.appendChild(eventDetailsElement);
-          listItem.appendChild(ticketIdElement);
-          listItem.appendChild(totalTicketsElement);
-          listItem.appendChild(priceElement);
-          listItem.appendChild(ticketsSoldElement);
-          listItem.appendChild(eventImageElement);
-          listItem.appendChild(ticketImageElement);
-          listItem.appendChild(transferButton);
-          listItem.appendChild(resaleButton);
+          divLeft.appendChild(eventImageElement);
+          divLeft.appendChild(eventNameElement);
+          divLeft.appendChild(eventDetailsElement);
+          divRight.appendChild(ticketImageElement);
+          divRight.appendChild(ticketIdElement);
+          divRight.appendChild(priceElement);
+          divRight.appendChild(transferButton);
+          divRight.appendChild(resaleButton);
+
+          divRow.appendChild(divLeft);
+          divRow.appendChild(divRight);
+
+          listItem.appendChild(divRow);
 
           ticketList.appendChild(listItem);
         }
