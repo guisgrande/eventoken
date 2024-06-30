@@ -35,7 +35,9 @@
 
 <script>
   console.log("OUTSIDE")
+
   async function loadTickets() {
+
     try {
       await window.ethereum.request({ method: 'eth_requestAccounts' });
 
@@ -60,6 +62,7 @@
       // Coletar informações detalhadas de cada ticket
       for (let i = 0; i < ticketIds.length; i++) {
         const ticketId = ticketIds[i];
+
         const eventId = await contract.getEventIdByTicket(ticketId)+1;
         console.log("Event ID: " + eventId)
         
@@ -79,7 +82,8 @@
         };
 
         ticketDetails.push(ticketInfo);
-      }
+      } // end for
+
       console.log("Tickets Details after loop: " + ticketDetails)
 
       // Renderizar os tickets na página
@@ -87,82 +91,83 @@
       ticketList.innerHTML = '';
 
       ticketDetails.forEach((ticket) => {
-    const listItem = document.createElement('li');
-    listItem.classList.add('list-group-item');
+        if (ticket.id > 0) {
+          const listItem = document.createElement('li');
+          listItem.classList.add('list-group-item');
 
-    // Criar elementos para mostrar as informações do ticket
-    const eventNameElement = document.createElement('p');
-    eventNameElement.textContent = `Event Name: ${ticket.eventName}`;
+          // Criar elementos para mostrar as informações do ticket
+          const eventNameElement = document.createElement('p');
+          eventNameElement.textContent = `Event Name: ${ticket.eventName}`;
 
-    const eventDetailsElement = document.createElement('p');
-    eventDetailsElement.textContent = `Details: ${ticket.eventDetails}`;
+          const eventDetailsElement = document.createElement('p');
+          eventDetailsElement.textContent = `Details: ${ticket.eventDetails}`;
 
-    const ticketIdElement = document.createElement('p');
-    ticketIdElement.textContent = `Ticket ID: ${ticket.id}`;
+          const ticketIdElement = document.createElement('p');
+          ticketIdElement.textContent = `Ticket ID: ${ticket.id}`;
 
-    const totalTicketsElement = document.createElement('p');
-    totalTicketsElement.textContent = `Total Tickets: ${ticket.totalTickets}`;
+          const totalTicketsElement = document.createElement('p');
+          totalTicketsElement.textContent = `Total Tickets: ${ticket.totalTickets}`;
 
-    const priceElement = document.createElement('p');
-    priceElement.textContent = `Price: ${ethers.utils.formatEther(ticket.price)} ETH`;
+          const priceElement = document.createElement('p');
+          priceElement.textContent = `Price: ${ethers.utils.formatEther(ticket.price)} ETH`;
 
-    const ticketsSoldElement = document.createElement('p');
-    ticketsSoldElement.textContent = `Tickets Sold: ${ticket.ticketsSold}`;
+          const ticketsSoldElement = document.createElement('p');
+          ticketsSoldElement.textContent = `Tickets Sold: ${ticket.ticketsSold}`;
 
-    const eventImageElement = document.createElement('img');
-    eventImageElement.src = ticket.eventImage;
-    eventImageElement.alt = 'Event Image';
-    eventImageElement.style.maxWidth = '100px'; // Ajustar conforme necessário
+          const eventImageElement = document.createElement('img');
+          eventImageElement.src = ticket.eventImage;
+          eventImageElement.alt = 'Event Image';
+          eventImageElement.style.maxWidth = '100px';
 
-    const ticketImageElement = document.createElement('img');
-    ticketImageElement.src = ticket.ticketImage;
-    ticketImageElement.alt = 'Ticket Image';
-    ticketImageElement.style.maxWidth = '100px'; // Ajustar conforme necessário
+          const ticketImageElement = document.createElement('img');
+          ticketImageElement.src = ticket.ticketImage;
+          ticketImageElement.alt = 'Ticket Image';
+          ticketImageElement.style.maxWidth = '100px';
 
-    const transferButton = document.createElement('button');
-    transferButton.classList.add('btn', 'btn-primary');
-    transferButton.textContent = 'Transfer Ticket';
-    transferButton.onclick = () => openTransferModal(ticket.id);
+          const transferButton = document.createElement('button');
+          transferButton.classList.add('btn', 'btn-primary');
+          transferButton.textContent = 'Transfer Ticket';
+          transferButton.onclick = () => openTransferModal(ticket.id);
 
-    // Adicionar elementos à lista de tickets
-    listItem.appendChild(eventNameElement);
-    listItem.appendChild(eventDetailsElement);
-    listItem.appendChild(ticketIdElement);
-    listItem.appendChild(totalTicketsElement);
-    listItem.appendChild(priceElement);
-    listItem.appendChild(ticketsSoldElement);
-    listItem.appendChild(eventImageElement);
-    listItem.appendChild(ticketImageElement);
-    listItem.appendChild(transferButton);
+          // Adicionar elementos à lista de tickets
+          listItem.appendChild(eventNameElement);
+          listItem.appendChild(eventDetailsElement);
+          listItem.appendChild(ticketIdElement);
+          listItem.appendChild(totalTicketsElement);
+          listItem.appendChild(priceElement);
+          listItem.appendChild(ticketsSoldElement);
+          listItem.appendChild(eventImageElement);
+          listItem.appendChild(ticketImageElement);
+          listItem.appendChild(transferButton);
 
-    ticketList.appendChild(listItem);
-});
+          ticketList.appendChild(listItem);
+        }
+      });
 
-ticketDetails.forEach((ticket) => {
-    console.log(`Ticket ID: ${ticket.id}`);
-    console.log(`Event Name: ${ticket.eventName}`);
-    console.log(`Details: ${ticket.eventDetails}`);
-    console.log(`Total Tickets: ${ticket.totalTickets}`);
-    console.log(`Price: ${ethers.utils.formatEther(ticket.price)} ETH`);
-    console.log(`Tickets Sold: ${ticket.ticketsSold}`);
-    console.log(`Event Image: ${ticket.eventImage}`);
-    console.log(`Ticket Image: ${ticket.ticketImage}`);
-    console.log('-----------------------------------');
-});
-
+      ticketDetails.forEach((ticket) => {
+          console.log(`Ticket ID: ${ticket.id}`);
+          console.log(`Event Name: ${ticket.eventName}`);
+          console.log(`Details: ${ticket.eventDetails}`);
+          console.log(`Total Tickets: ${ticket.totalTickets}`);
+          console.log(`Price: ${ethers.utils.formatEther(ticket.price)} ETH`);
+          console.log(`Tickets Sold: ${ticket.ticketsSold}`);
+          console.log(`Event Image: ${ticket.eventImage}`);
+          console.log(`Ticket Image: ${ticket.ticketImage}`);
+          console.log('-----------------------------------');
+      });
 
     } catch (error) {
       console.error('Erro ao carregar tickets:', error);
       alert('Erro ao carregar tickets. Verifique o console para mais detalhes.');
     }
-  }
+  } // end loadTickets
 
   function openTransferModal(ticketId) {
     const transferModal = document.getElementById('transferModal');
     const transferTicketId = document.getElementById('transferTicketId');
     transferTicketId.value = ticketId;
     $(transferModal).modal('show');
-  }
+  } // End openTransferModal
 
   async function transferTicket(event) {
     event.preventDefault();
@@ -183,12 +188,13 @@ ticketDetails.forEach((ticket) => {
       console.error('Error transferring ticket:', error);
       alert('Error transferring ticket. Check the console for more details.');
     }
-  }
+  } // End transferTicket
 
   document.getElementById('transferForm').addEventListener('submit', transferTicket);
 
   // Chamar a função para carregar os tickets ao carregar a página
   window.onload = loadTickets;
+
 </script>
 
 <%- include partials/footer.ejs %>
