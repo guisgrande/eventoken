@@ -18,3 +18,24 @@ a {
   background-color: #005A5D;
 }
 
+.button-one {
+  background-color: #28BDC2;
+  color: white;
+}
+
+.button-one:hover {
+  background-color: #005A5D;
+  color: white;
+}
+
+.button-two {
+  background-color: none;
+  border: 1px solid #005A5D !important;
+  color: #005A5D;
+}
+
+.button-two:hover {
+  background-color: #005A5D;
+  border: 1px solid white;
+  color: white;
+}
