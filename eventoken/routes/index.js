@@ -1,6 +1,11 @@
 var express = require('express');
 var router = express.Router();
 const User = require('../models/user');
+const { v4: uuidv4 } = require('uuid');
+
+function generateUniqueUserID() {
+  return `user-${uuidv4()}`;
+}
 
 /* GET Home page. */
 router.get('/', function(req, res, next) {
@@ -35,29 +40,31 @@ router.get('/manag/adduser', function(req, res, next) {
 router.post('/manag/adduser', async (req, res) => {
   const { userMetamaskAdr, userNickname } = req.body;
   try {
-    // Check if the user already exist useing the MetaMask address.
+    // Check if the user already exists using the MetaMask address.
     let user = await User.findOne({ userMetamaskAdr });
 
     if (user) {
-      console.log("User already exist")
-      // redirect to account page.
+      console.log("User already exists");
       res.redirect('/account');
     } else {
-      // If the user don't exist, create a new one.
+      // Generate a unique userID here
       const newUser = await User.create({
         userMetamaskAdr,
-        userID: 'useridtest01', // UserID example
+        userID: generateUniqueUserID(),
         userNickname,
-        userName: 'TestUser', // Name example
-        userCity: 'Test City', // City example
-        userEmail: 'test@example.com' // Email example
+        userName: 'TestUser',
+        userCity: 'Test City',
+        userEmail: 'test@example.com'
       });
-      console.log("New user created")
-      // redirect to account page.
+      console.log("New user created");
       res.redirect('/account');
     }
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    if (error.code === 11000) { // MongoDB duplicate key error
+      res.status(400).json({ message: 'Duplicate userID, try again.' });
+    } else {
+      res.status(400).json({ message: error.message });
+    }
   }
 });
 
