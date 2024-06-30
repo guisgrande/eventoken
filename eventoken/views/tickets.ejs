@@ -31,6 +31,33 @@
       </div>
     </div>
 
+    <!-- Modal para listar um ticket à venda -->
+    <div class="modal fade" id="listTicketModal" tabindex="-1" role="dialog" aria-labelledby="listTicketModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h5 class="modal-title" id="listTicketModalLabel">Listar Ticket para Venda</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                  </button>
+              </div>
+              <div class="modal-body">
+                  <form id="listTicketForm">
+                      <div class="form-group">
+                          <label for="ticketPrice">Preço do Ticket (ETH)</label>
+                          <input type="number" step="0.01" min="0" class="form-control" id="ticketPrice" placeholder="Insira o preço do ticket" required>
+                          <input type="hidden" id="sellTicketId">
+                      </div>
+                  </form>
+              </div>
+              <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                  <button type="button" class="btn btn-primary" onclick="listTicketForSale()">Listar para Venda</button>
+              </div>
+          </div>
+      </div>
+  </div>
+
 </body>
 
 <script>
@@ -63,7 +90,7 @@
       for (let i = 0; i < ticketIds.length; i++) {
         const ticketId = ticketIds[i];
 
-        const eventId = await contract.getEventIdByTicket(ticketId)+1;
+        const eventId = await contract.getEventIdByTicket(ticketId);
         console.log("Event ID: " + eventId)
         
         // Obter os detalhes do evento utilizando getEventDetails
@@ -129,6 +156,11 @@
           transferButton.textContent = 'Transfer Ticket';
           transferButton.onclick = () => openTransferModal(ticket.id);
 
+          const resaleButton = document.createElement('button');
+          resaleButton.classList.add('btn', 'btn-primary');
+          resaleButton.textContent = 'Sell Ticket';
+          resaleButton.onclick = () => openSellModal(ticket.id);
+
           // Adicionar elementos à lista de tickets
           listItem.appendChild(eventNameElement);
           listItem.appendChild(eventDetailsElement);
@@ -139,6 +171,7 @@
           listItem.appendChild(eventImageElement);
           listItem.appendChild(ticketImageElement);
           listItem.appendChild(transferButton);
+          listItem.appendChild(resaleButton);
 
           ticketList.appendChild(listItem);
         }
@@ -169,6 +202,13 @@
     $(transferModal).modal('show');
   } // End openTransferModal
 
+  function openSellModal(ticketId) {
+    const transferModal = document.getElementById('listTicketModal');
+    const sellTicketId = document.getElementById('sellTicketId');
+    sellTicketId.value = ticketId;
+    $(transferModal).modal('show');
+  } // End openSellModal
+
   async function transferTicket(event) {
     event.preventDefault();
     const transferForm = document.getElementById('transferForm');
@@ -189,6 +229,35 @@
       alert('Error transferring ticket. Check the console for more details.');
     }
   } // End transferTicket
+  
+  async function listTicketForSale() {
+  const ticketId = document.getElementById('sellTicketId').value;
+    const ticketPrice = document.getElementById('ticketPrice').value;
+
+    try {
+      // Configurar o provedor e o signer
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
+      const contract = new ethers.Contract(contractAddress, contractABI, signer);
+
+      // Antes de enviar a transação, configure um limite de gás suficiente
+      const overrides = {
+        gasLimit: ethers.utils.hexlify(300000), // Ajuste o valor de acordo com suas necessidades
+      };
+
+      // Chame a função do contrato passando os overrides
+      await contract.listTicketForSale(ticketId, ethers.utils.parseEther(ticketPrice), overrides);
+
+      alert('Ticket listed for sale successfully!');
+      $('#listTicketModal').modal('hide'); // Fechar modal após listagem
+
+      loadTickets(); // Recarregar os tickets após a listagem
+
+    } catch (error) {
+      console.error('Error listing ticket for sale:', error);
+      alert('Error listing ticket for sale. Check the console for more details.');
+    }
+  }
 
   document.getElementById('transferForm').addEventListener('submit', transferTicket);
 
