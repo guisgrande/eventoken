@@ -1,5 +1,9 @@
 body {
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  font: 16px "Dosis", sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font: "Josefin Sans", sans-serif !important;
 }
 
 a {
@@ -40,6 +44,18 @@ a {
 
 .button-two:hover {
   background-color: #005A5D;
+  border: 1px solid white;
+  color: white;
+}
+
+.button-two-alt {
+  background-color: none;
+  border: 1px solid #00F6FF !important;
+  color: #00F6FF;
+}
+
+.button-two-alt:hover {
+  background-color: #00F6FF;
   border: 1px solid white;
   color: white;
 }
