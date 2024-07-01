@@ -29,14 +29,14 @@
 
                   // Create the card element for each event
                   const eventCard = document.createElement('div');
-                  eventCard.classList.add('m-4', 'p-0', 'row', 'g-0', 'text-white', 'rounded', 'd-flex', 'justify-content-center');
+                  eventCard.classList.add('m-4', 'p-0', 'row', 'g-0', 'text-white', 'rounded', 'd-flex', 'justify-content-center', 'aligne-item-center');
 
                   // Create the internal structure of the card with the event details
                   eventCard.innerHTML = `
-                  <div class="col-md-4 p-0">
+                  <div class="col-md-5 p-0">
                       <img src="${event.eventImage}" class="p-0 img-fluid rounded-start" alt="Event Image">
                   </div>
-                  <div class="col-md-6 bg-dark rounded">
+                  <div class="col-md-5 bg-dark rounded">
                     <div class="card-body">
                         <h5 class="card-title">${event.name}</h5>
                         <p class="card-text">${event.details}</p>
