@@ -6,12 +6,12 @@
     <p>All your tickets in one place.</p>
   </div>
 
-  <!-- Elemento para exibir a lista de tickets -->
+  <!-- Element to display the list of tickets -->
   <div class="d-flex justify-content-center">
     <ul id="ticketList" class="list-group col-9"></ul>
   </div>
 
-    <!-- Modal para inserir o endereço do destinatário -->
+    <!-- Modal for entering the recipient's address -->
     <div class="modal" id="transferModal" tabindex="-1" role="dialog">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -28,19 +28,22 @@
                 <input type="text" class="form-control" id="recipientAddress" required>
                 <input type="hidden" id="transferTicketId">
               </div>
-              <button type="submit" class="btn btn-primary">Transfer</button>
             </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn button-two" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn button-one">Transfer</button>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Modal para listar um ticket à venda -->
+    <!-- Modal to list a ticket for sale -->
     <div class="modal fade" id="listTicketModal" tabindex="-1" role="dialog" aria-labelledby="listTicketModalLabel" aria-hidden="true">
       <div class="modal-dialog" role="document">
           <div class="modal-content">
               <div class="modal-header">
-                  <h5 class="modal-title" id="listTicketModalLabel">Listar Ticket para Venda</h5>
+                  <h5 class="modal-title" id="listTicketModalLabel">List Ticket for Sale</h5>
                   <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                       <span aria-hidden="true">&times;</span>
                   </button>
@@ -48,15 +51,15 @@
               <div class="modal-body">
                   <form id="listTicketForm">
                       <div class="form-group">
-                          <label for="ticketPrice">Preço do Ticket (ETH)</label>
+                          <label for="ticketPrice">Ticket price (ETH)</label>
                           <input type="number" step="0.01" min="0" class="form-control" id="ticketPrice" placeholder="Insira o preço do ticket" required>
                           <input type="hidden" id="sellTicketId">
                       </div>
                   </form>
               </div>
               <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
-                  <button type="button" class="btn btn-primary" onclick="listTicketForSale()">Listar para Venda</button>
+                  <button type="button" class="btn button-two" data-dismiss="modal">Close</button>
+                  <button type="button" class="btn button-one" onclick="listTicketForSale()">List for sale</button>
               </div>
           </div>
       </div>
@@ -76,31 +79,31 @@
       const signer = provider.getSigner();
       console.log("Signer: " + signer)
 
-      // Obter o endereço formatado do usuário
+      // Get the user's formatted address
       const userAddress = await signer.getAddress();
       console.log("User add: " + userAddress)
       
       const contract = new ethers.Contract(contractAddress, contractABI, signer);
 
-      // Obter todos os tickets do usuário
+      // Get all user tickets
       const ticketIds = await contract.getUserAllTickets(userAddress);
       console.log("Tickets IDS: " + ticketIds)
 
-      // Lista para armazenar informações detalhadas de cada ticket
+      // List for storing detailed information on each ticket
       const ticketDetails = [];
       console.log("Tickets Details before loop: " + ticketDetails)
 
-      // Coletar informações detalhadas de cada ticket
+      // Collect detailed information on each ticket
       for (let i = 0; i < ticketIds.length; i++) {
         const ticketId = ticketIds[i];
 
         const eventId = await contract.getEventIdByTicket(ticketId);
         console.log("Event ID: " + eventId)
         
-        // Obter os detalhes do evento utilizando getEventDetails
+        // Get the event details using getEventDetails
         const eventDetails = await contract.getEventDetails(eventId);
         console.log("Event Details: " + eventDetails)
-        // Construir o objeto com informações detalhadas do ticket
+        // Build the object with detailed ticket information
         const ticketInfo = {
           id: ticketId,
           eventName: eventDetails[1],
@@ -117,7 +120,7 @@
 
       console.log("Tickets Details after loop: " + ticketDetails)
 
-      // Renderizar os tickets na página
+      // Render tickets on the page
       const ticketList = document.getElementById('ticketList');
       ticketList.innerHTML = '';
 
@@ -135,7 +138,7 @@
           const divRight = document.createElement('div');
           divRight.classList.add('col-5');
 
-          // Criar elementos para mostrar as informações do ticket à venda
+          // Create elements to show sales ticket information
           const eventNameElement = document.createElement('h3');
           eventNameElement.classList.add('mt-2')
           eventNameElement.textContent = `Event Name: ${ticket.eventName}`;
@@ -172,7 +175,7 @@
           resaleButton.textContent = 'Sell Ticket';
           resaleButton.onclick = () => openSellModal(ticket.id);
 
-          // Adicionar elementos à lista de tickets
+          // Add elements to the ticket list
           divLeft.appendChild(eventImageElement);
           divLeft.appendChild(eventNameElement);
           divLeft.appendChild(eventDetailsElement);
@@ -204,8 +207,8 @@
       });
 
     } catch (error) {
-      console.error('Erro ao carregar tickets:', error);
-      alert('Erro ao carregar tickets. Verifique o console para mais detalhes.');
+      console.error('Error loading tickets:', error);
+      alert('Error loading tickets.');
     }
   } // end loadTickets
 
@@ -249,33 +252,33 @@
     const ticketPrice = document.getElementById('ticketPrice').value;
 
     try {
-      // Configurar o provedor e o signer
+      // Setting up the provider and signer
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const signer = provider.getSigner();
       const contract = new ethers.Contract(contractAddress, contractABI, signer);
 
-      // Antes de enviar a transação, configure um limite de gás suficiente
+      // Before sending the transaction, set a sufficient gas limit
       const overrides = {
-        gasLimit: ethers.utils.hexlify(300000), // Ajuste o valor de acordo com suas necessidades
+        gasLimit: ethers.utils.hexlify(300000),
       };
 
-      // Chame a função do contrato passando os overrides
+      // Call the contract function by passing the overrides
       await contract.listTicketForSale(ticketId, ethers.utils.parseEther(ticketPrice), overrides);
 
       alert('Ticket listed for sale successfully!');
-      $('#listTicketModal').modal('hide'); // Fechar modal após listagem
+      $('#listTicketModal').modal('hide'); // Close modal after listing
 
-      loadTickets(); // Recarregar os tickets após a listagem
+      loadTickets(); // Reload tickets after listing
 
     } catch (error) {
       console.error('Error listing ticket for sale:', error);
-      alert('Error listing ticket for sale. Check the console for more details.');
+      alert('Error listing ticket for sale.');
     }
   }
 
   document.getElementById('transferForm').addEventListener('submit', transferTicket);
 
-  // Chamar a função para carregar os tickets ao carregar a página
+  // Call the function to load tickets when loading the page
   window.onload = loadTickets;
 
 </script>

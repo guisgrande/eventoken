@@ -3,7 +3,9 @@
 <body>
   <h1 class="text-center m-4"><i class="bi bi-card-list first-color"></i> Event List</h1>
   <div id="eventsContainer" class="d-flex justify-content-center flex-column"></div>
-  <button id="loadMoreBtn" class="btn btn-primary mt-2" onclick="loadMoreEvents()">Load More</button>
+  <div class="d-flex justify-content-center">
+    <button id="loadMoreBtn" class="btn button-two mt-2" onclick="loadMoreEvents()">Load More</button>
+  </div>
 
   <script>
       let currentIndex = 1; // Start index here.
@@ -25,11 +27,11 @@
                   const event = await contract.events(i);
                   const ticketsAvailable = await contract.ticketsAvailable(i);
 
-                  // Criar o elemento card para cada evento
+                  // Create the card element for each event
                   const eventCard = document.createElement('div');
                   eventCard.classList.add('m-4', 'p-0', 'row', 'g-0', 'text-white', 'rounded', 'd-flex', 'justify-content-center');
 
-                  // Criar a estrutura interna do card com os detalhes do evento
+                  // Create the internal structure of the card with the event details
                   eventCard.innerHTML = `
                   <div class="col-md-4 p-0">
                       <img src="${event.eventImage}" class="p-0 img-fluid rounded-start" alt="Event Image">
@@ -49,7 +51,7 @@
                   </div>
                   `;
 
-                  // Adicionar o card do evento ao contêiner de eventos
+                  // Add the event card to the event container
                   eventsContainer.appendChild(eventCard);
               }
 
@@ -86,12 +88,6 @@
               // Calculate the total price of the tickets the user wants to buy
               const totalPrice = ticketPrice.mul(quantity);
               console.log("Total price:" + totalPrice);
-
-              // Antes de enviar a transação, configure um limite de gás e preço de gás suficientes
-              // const overrides = {
-                  // gasLimit: ethers.utils.hexlify(500000), // Ajuste conforme necessário
-                  // gasPrice: ethers.utils.parseUnits('100', 'gwei'), // Ajuste conforme necessário
-              //};
 
               // Call to the purchaseTickets function from contract
               const tx = await contract.purchaseTickets(eventId, quantity, { value: totalPrice });

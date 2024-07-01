@@ -4,7 +4,7 @@
   <h1 class="text-center m-4"><i class="bi bi-receipt-cutoff first-color"></i> Resale Tickets</h1>
   <p class="text-center m-4">Your second chance to get the ticket for the Events.</p>
 
-  <!-- Elemento para exibir a lista de tickets para revenda -->
+  <!-- Element to display the list of tickets for resale -->
   <div class="d-flex justify-content-center">
     <ul id="resaleTicketList" class="list-group col-md-8"></ul>
   </div>
@@ -19,30 +19,30 @@
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const signer = provider.getSigner();
         
-      // Obter o endereço formatado do usuário
+      // Get the user's formatted address
       const userAddress = await signer.getAddress();
       
       const contract = new ethers.Contract(contractAddress, contractABI, signer);
 
-      // Chamar a função getAllTicketsForSale para obter todos os tickets à venda
+      // Call the getAllTicketsForSale function to get all the tickets on sale
       const ticketsForSale = await contract.getAllTicketsForSale();
 
-      // Lista para armazenar informações detalhadas de cada ticket à venda
+      // List for storing detailed information on each ticket for sale
       const resaleTicketDetails = [];
 
-      // Coletar informações detalhadas de cada ticket à venda
+      // Collect detailed information on each sales ticket
       for (let i = 0; i < ticketsForSale.length; i++) {
         const ticket = ticketsForSale[i];
 
         if (ticket.tokenId !== 0) {
-          // Construir o objeto com informações detalhadas do ticket
+          // Build the object with detailed ticket information
           const ticketInfo = {
             id: ticket.tokenId,
             price: ticket.price,
             owner: ticket.owner
           };
 
-          // Obter detalhes adicionais do evento, se necessário
+          // Get additional event details, if necessary
           const eventId = await contract.getEventIdByTicket(ticket.tokenId);
           const eventDetails = await contract.getEventDetails(eventId);
 
@@ -55,7 +55,7 @@
         }
       }
 
-      // Renderizar os tickets à venda na página
+      // Render the tickets for sale on the page
       const resaleTicketList = document.getElementById('resaleTicketList');
       resaleTicketList.innerHTML = '';
 
@@ -72,7 +72,7 @@
         const divRight = document.createElement('div');
         divRight.classList.add('col-7');
 
-        // Criar elementos para mostrar as informações do ticket à venda
+        // Create elements to show sales ticket information
         const eventNameElement = document.createElement('h3');
         eventNameElement.classList.add('mt-2')
         eventNameElement.textContent = `Event Name: ${ticket.eventName}`;
@@ -100,30 +100,30 @@
         ticketImageElement.alt = 'Ticket Image';
         ticketImageElement.style.maxWidth = '150px';
 
-        // Botão de compra
+        // Buy button
         const buyButton = document.createElement('button');
         buyButton.textContent = 'Buy Ticket';
         buyButton.classList.add('btn', 'button-one', 'mt-2');
         
         buyButton.onclick = async () => {
           try {
-            const gasLimit = 300000; // Defina um valor adequado para o limite de gás aqui
+            const gasLimit = 300000;
 
             await contract.buyTicket(ticket.id, {
               value: ticket.price,
               gasLimit: gasLimit
             });
 
-            // Transação bem-sucedida
+            // Success
             console.log("Ticket purchased successfully!");
           } catch (error) {
-            // Tratamento de erros
+            // Error
             console.error("Error purchasing ticket:", error);
-            alert("Error purchasing ticket. Check console for details.");
+            alert("Error purchasing ticket.");
           }
         };
 
-        // Adicionar elementos à lista de tickets à venda        
+        // Add items to the list of tickets for sale 
         divLeft.appendChild(eventImageElement);
         divLeft.appendChild(eventNameElement);
         divLeft.appendChild(eventDetailsElement);
@@ -147,7 +147,7 @@
     }
   } // end loadResaleTickets
 
-  // Chamar a função para carregar os tickets à venda ao carregar a página
+  // Call the function to load the tickets for sale when loading the page
   window.onload = loadResaleTickets;
 
 </script>
