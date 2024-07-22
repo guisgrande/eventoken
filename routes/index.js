@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 const User = require('../models/user');
+const Ticket = require('../models/tickets');
 const { v4: uuidv4 } = require('uuid');
 
 function generateUniqueUserID() {
@@ -17,9 +18,34 @@ router.get('/account', function(req, res, next) {
   res.render('account', { title: 'Eventoken - Account', name:null });
 });
 
-/* GET Ticket Details page. */
-router.get('/ticketdetails', function(req, res, next) {
-  res.render('ticketDetails', { title: 'Eventoken - Ticket Details' });
+// GET Ticket Details page
+router.get('/ticketdetails', async function(req, res, next) {
+  const ticketId = req.query.ticketId;
+
+  if (!ticketId) {
+    return res.status(400).send('Ticket ID is required');
+  }
+
+  try {
+    // Encontrar o ticket no banco de dados
+    let ticket = await Ticket.findOne({ ticketId });
+
+    if (!ticket) {
+      // Criar um novo ticket se não existir
+      ticket = new Ticket({
+        ticketId,
+        ticketUsed: false
+      });
+
+      await ticket.save();
+    }
+
+    // Renderizar a página com os detalhes do ticket
+    res.render('ticketDetails', { title: 'Eventoken - Ticket Details', ticket });
+  } catch (error) {
+    console.error('Error fetching or creating ticket:', error);
+    res.status(500).send('Internal Server Error');
+  }
 });
 
 /* GET Events page. */
