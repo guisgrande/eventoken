@@ -17,6 +17,11 @@ router.get('/account', function(req, res, next) {
   res.render('account', { title: 'Eventoken - Account', name:null });
 });
 
+/* GET Ticket Details page. */
+router.get('/ticketdetails', function(req, res, next) {
+  res.render('ticketDetails', { title: 'Eventoken - Ticket Details' });
+});
+
 /* GET Events page. */
 router.get('/events', function(req, res, next) {
   res.render('events', { title: 'Eventoken - Events', name:null });
