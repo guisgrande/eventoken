@@ -7,8 +7,18 @@
   </div>
 
   <div id="ticketDetails" class="d-flex justify-content-center m-2"></div>
-
   <div id="eventDetails" class="d-flex justify-content-center m-2"></div>
+
+  <!-- QR Code Section -->
+  <div class="text-center m-4 d-flex justify-content-center">
+    <div class="bg-dark p-4 col-4 rounded">
+      <button id="toggleQRCodeBtn" class="btn button-two m-2">Show QR Code</button>
+      <div id="qrCodeContainer" class="m-2 d-flex justify-content-center">
+        <i id="hideQrCode" class="bi bi-eye-slash first-color" style="font-size: 150px; height: 150px;"></i>
+        <img id="qrCode" src="" alt="QR Code" />
+      </div>
+    </div>
+  </div>
 
   <script>
     async function loadTicketDetails() {
@@ -103,6 +113,41 @@
 
         ticketDetailsContainer.appendChild(detailCardTicket);
         eventDetailsContainer.appendChild(detailCardEvent);
+
+        // Set QR code URL
+        const qrCodeContainer = document.getElementById('qrCodeContainer');
+        const qrCodeImage = document.getElementById('qrCode');
+        const qrIcon = document.getElementById('hideQrCode');
+        
+      // Set QR code URL
+      const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=/checkTicket?ticketId=${ticketId}`;
+      qrCodeImage.src = qrCodeUrl;
+
+      // Initialize QR code visibility
+      qrCodeImage.classList.add('element-hidden');
+      qrIcon.classList.add('element-show');
+      document.getElementById('toggleQRCodeBtn').textContent = 'Show QR Code';
+
+      // Toggle QR code visibility
+      document.getElementById('toggleQRCodeBtn').addEventListener('click', () => {
+        const isHidden = qrCodeImage.classList.contains('element-hidden');
+        
+        if (isHidden) {
+          qrCodeImage.classList.remove('element-hidden');
+          qrCodeImage.classList.add('element-show');
+          qrIcon.classList.remove('element-show');
+          qrIcon.classList.add('element-hidden');
+          document.getElementById('toggleQRCodeBtn').textContent = 'Hide QR Code';
+        } else {
+          qrCodeImage.classList.remove('element-show');
+          qrCodeImage.classList.add('element-hidden');
+          qrIcon.classList.remove('element-hidden');
+          qrIcon.classList.add('element-show');
+          document.getElementById('toggleQRCodeBtn').textContent = 'Show QR Code';
+        }
+      });
+
+
       } catch (error) {
         console.error('Error loading ticket details:', error);
         alert('Error loading ticket details. Check the console for more details.');

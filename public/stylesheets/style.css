@@ -71,3 +71,11 @@ a {
 .border-one {
   border: 1px #00F6FF solid;
 }
+
+.element-hidden {
+  display: none;
+}
+
+.element-show {
+  display: block;
+}
