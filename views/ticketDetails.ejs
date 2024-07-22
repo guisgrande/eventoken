@@ -6,7 +6,9 @@
     <p>Details of your selected ticket.</p>
   </div>
 
-  <div id="ticketDetails" class="d-flex justify-content-center"></div>
+  <div id="ticketDetails" class="d-flex justify-content-center m-2"></div>
+
+  <div id="eventDetails" class="d-flex justify-content-center m-2"></div>
 
   <script>
     async function loadTicketDetails() {
@@ -40,12 +42,19 @@
         };
 
         const ticketDetailsContainer = document.getElementById('ticketDetails');
+        const eventDetailsContainer = document.getElementById('eventDetails');
 
-        const detailCard = document.createElement('div');
-        detailCard.classList.add('card', 'bg-dark', 'text-white', 'col-8');
+        const detailCardTicket = document.createElement('div');
+        detailCardTicket.classList.add('card', 'bg-dark', 'text-white', 'col-7');
 
-        const cardBody = document.createElement('div');
-        cardBody.classList.add('card-body', 'd-flex', 'flex-column', 'justify-content-center', 'align-items-center');
+        const detailCardEvent = document.createElement('div');
+        detailCardEvent.classList.add('card', 'bg-dark', 'text-white', 'col-7');
+
+        const cardBodyTicket = document.createElement('div');
+        cardBodyTicket.classList.add('card-body', 'd-flex', 'flex-column', 'justify-content-center', 'align-items-center');
+
+        const cardBodyEvent = document.createElement('div');
+        cardBodyEvent.classList.add('card-body', 'd-flex', 'flex-column', 'justify-content-center', 'align-items-center');
 
         const eventNameElement = document.createElement('h3');
         eventNameElement.classList.add('m-2');
@@ -75,17 +84,25 @@
         ticketImageElement.alt = 'Ticket Image';
         ticketImageElement.style.maxWidth = '50%';
 
-        cardBody.appendChild(ticketImageElement);
-        cardBody.appendChild(ticketIdElement);
-        cardBody.appendChild(priceElement);
+        const ticketUsedElement = document.createElement('p');
+        ticketUsedElement.classList.add('m-2');
+        ticketUsedElement.innerHTML = 'Used: <%= ticket.ticketUsed ? 'Yes' : 'No' %>';
+        
 
-        cardBody.appendChild(eventImageElement);
-        cardBody.appendChild(eventNameElement);
-        cardBody.appendChild(eventDetailsElement);
+        cardBodyTicket.appendChild(ticketImageElement);
+        cardBodyTicket.appendChild(ticketIdElement);
+        cardBodyTicket.appendChild(ticketUsedElement);
+        cardBodyTicket.appendChild(priceElement);
 
-        detailCard.appendChild(cardBody);
+        cardBodyEvent.appendChild(eventImageElement);
+        cardBodyEvent.appendChild(eventNameElement);
+        cardBodyEvent.appendChild(eventDetailsElement);
 
-        ticketDetailsContainer.appendChild(detailCard);
+        detailCardTicket.appendChild(cardBodyTicket);
+        detailCardEvent.appendChild(cardBodyEvent);
+
+        ticketDetailsContainer.appendChild(detailCardTicket);
+        eventDetailsContainer.appendChild(detailCardEvent);
       } catch (error) {
         console.error('Error loading ticket details:', error);
         alert('Error loading ticket details. Check the console for more details.');
