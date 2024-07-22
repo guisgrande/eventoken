@@ -145,14 +145,19 @@
           ticketImageElement.style.maxWidth = '150px';
 
           const transferButton = document.createElement('button');
-          transferButton.classList.add('btn', 'button-one', 'm-2');
+          transferButton.classList.add('btn','btn-sm', 'button-one', 'm-2');
           transferButton.textContent = 'Transfer Ticket';
           transferButton.onclick = () => openTransferModal(ticket.id);
 
           const resaleButton = document.createElement('button');
-          resaleButton.classList.add('btn', 'button-one', 'm-2');
+          resaleButton.classList.add('btn', 'btn-sm', 'button-one', 'm-2');
           resaleButton.textContent = ticket.isForSale ? 'Remove from Resale' : 'Sell Ticket';
           resaleButton.onclick = ticket.isForSale ? () => removeTicketFromSale(ticket.id) : () => openSellModal(ticket.id);
+
+          const viewButton = document.createElement('a');
+          viewButton.textContent = 'Ticket Details';
+          viewButton.classList.add('btn', 'btn-sm', 'button-two-alt', 'm-2');
+          viewButton.href = `/ticketdetails?ticketId=${ticket.id}`;
 
           divLeft.appendChild(eventImageElement);
           divLeft.appendChild(eventNameElement);
@@ -162,6 +167,7 @@
           divRight.appendChild(priceElement);
           divRight.appendChild(transferButton);
           divRight.appendChild(resaleButton);
+          divRight.appendChild(viewButton);
 
           divRow.appendChild(divLeft);
           divRow.appendChild(divRight);
