@@ -79,3 +79,7 @@ a {
 .element-show {
   display: block;
 }
+
+.icon-size {
+  font-size: 24px !important;
+}
