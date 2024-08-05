@@ -1,0 +1,122 @@
+<%- include('../partials/header.ejs') %>
+
+<body>
+  <h1 class="text-center m-4"><i class="bi bi-card-list first-color"></i> My Events</h1>
+  <div id="eventsContainer" class="d-flex justify-content-center flex-column"></div>
+  <div class="text-center text-white mt-4 d-flex justify-content-center">
+    <div id="noEventsMessageBox" class="col-4 bg-dark rounded p-2" style="display: none;">
+        <p id="noEventsMessage" style="display: none;">No events created using this account yet.</p>
+    </div>
+  </div>
+  <div class="d-flex justify-content-center">
+    <button id="loadMoreBtn" class="btn button-two mt-2" onclick="loadMoreEvents()">Load More</button>
+  </div>
+
+  <script>
+      let currentIndex = 1; // Start index here.
+      const eventsPerPage = 6;
+      let userAddress = null;
+      let hasEvents = false;
+
+      // Função para obter o endereço do usuário logado
+      async function getUserAddress() {
+          try {
+              await window.ethereum.request({ method: 'eth_requestAccounts' });
+              const provider = new ethers.providers.Web3Provider(window.ethereum);
+              const signer = provider.getSigner();
+              userAddress = await signer.getAddress();
+          } catch (error) {
+              console.error('Error fetching user address: ', error);
+              alert('Error fetching user address.');
+          }
+      }
+
+      // Função para carregar mais eventos
+      async function loadMoreEvents() {
+          try {
+              if (!userAddress) {
+                  await getUserAddress();
+              }
+
+              const provider = new ethers.providers.Web3Provider(window.ethereum);
+              const signer = provider.getSigner();
+              const contract = new ethers.Contract(contractAddress, contractABI, signer);
+
+              const totalEvents = await contract.nextEventId();
+              const eventsContainer = document.getElementById('eventsContainer');
+
+              let newEventsLoaded = false;
+
+              for (let i = currentIndex; i < currentIndex + eventsPerPage && i < totalEvents; i++) {
+                  const event = await contract.events(i);
+
+                  if (event.creator.toLowerCase() !== userAddress.toLowerCase()) {
+                      continue; // Skip events not created by the user
+                  }
+
+                  hasEvents = true;
+                  newEventsLoaded = true;
+
+                  const ticketsAvailable = await contract.ticketsAvailable(i);
+
+                  // Create the card element for each event
+                  const eventCard = document.createElement('div');
+                  eventCard.classList.add('m-4', 'p-0', 'row', 'g-0', 'text-white', 'rounded', 'd-flex', 'justify-content-center', 'align-items-center');
+
+                  // Create the internal structure of the card with the event details
+                  eventCard.innerHTML = `
+                  <div class="col-md-5 p-0 d-flex justify-content-center align-items-center">
+                      <img src="${event.eventImage}" class="p-0 img-fluid rounded-start" alt="Event Image">
+                  </div>
+                  <div class="col-md-5 bg-dark rounded">
+                    <div class="card-body">
+                        <h5 class="card-title">${event.name}</h5>
+                        <p class="card-text">${event.details}</p>
+                        <div class="d-flex flex-row align-items-center">
+                            <div class="col-6">
+                                <ul class="list-group list-group-flush rounded" style="font-size: 14px;">
+                                    <li class="list-group-item bg-dark">Total Tickets: ${event.totalTickets}</li>
+                                    <li class="list-group-item bg-dark">Price: ${ethers.utils.formatEther(event.price)} ETH</li>
+                                    <li class="list-group-item bg-dark">Tickets Sold: ${event.ticketsSold}</li>
+                                    <li class="list-group-item bg-dark">Tickets Available: ${ticketsAvailable}</li>
+                                </ul>
+                            </div>
+                            <div class="col-4 p-2 border-one">
+                                <img src="${event.ticketImage}" class="p-0 img-fluid rounded-start" alt="Ticket Image">
+                            </div>
+                        </div>
+                        <button class="btn button-one mt-2" onclick="redirectToEventControl(${event.eventId})">Event Control</button>
+                    </div>
+                  </div>
+                  `;
+
+                  // Add the event card to the event container
+                  eventsContainer.appendChild(eventCard);
+              }
+
+              currentIndex += eventsPerPage;
+              if (currentIndex >= totalEvents) {
+                  document.getElementById('loadMoreBtn').style.display = 'none';
+              }
+
+              if (!hasEvents && !newEventsLoaded) {
+                  document.getElementById('noEventsMessage').style.display = 'block';
+                  document.getElementById('noEventsMessageBox').style.display = 'block';
+              }
+          } catch (error) {
+              console.error('Error loading events: ', error);
+              alert('Error loading events.');
+          }
+      }
+
+      // Função para redirecionar para a página de controle do evento
+      function redirectToEventControl(eventId) {
+          window.location.href = `/manag/eventControl?eventId=${eventId}`;
+      }
+
+      // Loads the first events when the page is loaded
+      document.addEventListener('DOMContentLoaded', loadMoreEvents);
+  </script>
+</body>
+
+<%- include('../partials/footer.ejs') %>
