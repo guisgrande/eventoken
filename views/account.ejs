@@ -89,6 +89,13 @@
                         addEventButton.href = "/manag/addevent";
                         document.getElementById("buttonContainer").appendChild(addEventButton);
 
+                        // Add button to redirect to manag/myevents.ejs
+                        const myEventButton = document.createElement("a");
+                        myEventButton.textContent = "Go to My Events";
+                        myEventButton.classList.add("btn", "button-one", "btn-sm", "m-2");
+                        myEventButton.href = "/manag/myevents";
+                        document.getElementById("buttonContainer").appendChild(myEventButton);
+
                     } else {
                         account = null;
                         document.getElementById("userArea").innerHTML = "<strong>Status:</strong> Not connected to MetaMask";
