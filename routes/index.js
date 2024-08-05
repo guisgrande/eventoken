@@ -73,6 +73,11 @@ router.get('/manag/myevents', function(req, res, next) {
   res.render('manag/myevents', { title: 'Eventoken - My Events' });
 });
 
+/* GET Manag - Event Control page. */
+router.get('/manag/eventControl', function(req, res, next) {
+  res.render('manag/eventControl', { title: 'Eventoken - My Events' });
+});
+
 /* GET and POST Manag - Adduser page. */
 router.get('/manag/adduser', function(req, res, next) {
   res.render('manag/adduser', { title: 'Eventoken - Add User' });
@@ -106,6 +111,67 @@ router.post('/manag/adduser', async (req, res) => {
     } else {
       res.status(400).json({ message: error.message });
     }
+  }
+});
+
+// GET Check Ticket page and validate ticket
+router.get('/checkTicket', async (req, res) => {
+  const ticketId = req.query.ticketId;
+
+  if (!ticketId) {
+      return res.status(400).send('Ticket ID is required');
+  }
+
+  try {
+      let ticket = await Ticket.findOne({ ticketId });
+
+      if (!ticket) {
+          return res.status(404).send('Ticket not found');
+      }
+
+      if (ticket.ticketUsed) {
+          return res.send('Ticket has already been used');
+      }
+
+      ticket.ticketUsed = true;
+      await ticket.save();
+
+      res.send('Ticket validated successfully');
+  } catch (error) {
+      console.error('Error checking ticket:', error);
+      res.status(500).send('Internal Server Error');
+  }
+});
+
+// POST Update ticket status
+router.post('/updateTicketStatus', async function(req, res, next) {
+  const { ticketId } = req.body;
+
+  if (!ticketId) {
+    return res.status(400).send('Ticket ID is required');
+  }
+
+  try {
+    // Encontrar o ticket no banco de dados
+    const ticket = await Ticket.findOne({ ticketId });
+
+    if (!ticket) {
+      return res.status(404).send('Ticket not found');
+    }
+
+    // Se o ticket já foi usado, não pode ser validado novamente
+    if (ticket.ticketUsed) {
+      return res.status(400).send('Ticket has already been used');
+    }
+
+    // Atualizar o status do ticket para usado
+    ticket.ticketUsed = true;
+    await ticket.save();
+
+    res.send('Ticket validated successfully');
+  } catch (error) {
+    console.error('Error updating ticket status:', error);
+    res.status(500).send('Internal Server Error');
   }
 });
 
