@@ -68,6 +68,11 @@ router.get('/manag/addevent', function(req, res, next) {
   res.render('manag/addevent', { title: 'Eventoken - Create an Event' });
 });
 
+/* GET Manag - My Events page. */
+router.get('/manag/myevents', function(req, res, next) {
+  res.render('manag/myevents', { title: 'Eventoken - My Events' });
+});
+
 /* GET and POST Manag - Adduser page. */
 router.get('/manag/adduser', function(req, res, next) {
   res.render('manag/adduser', { title: 'Eventoken - Add User' });
@@ -102,11 +107,6 @@ router.post('/manag/adduser', async (req, res) => {
       res.status(400).json({ message: error.message });
     }
   }
-});
-
-/* GET Manag - Addevent page. */
-router.get('/manag/addevent', function(req, res, next) {
-  res.render('manag/addevent', { title: 'Eventoken - Create Event' });
 });
 
 module.exports = router;
