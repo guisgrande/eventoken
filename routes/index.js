@@ -114,6 +114,38 @@ router.post('/manag/adduser', async (req, res) => {
   }
 });
 
+/* GET and POST Manag - Update User page. */
+router.get('/manag/updateUser', function(req, res, next) {
+  res.render('manag/updateUser', { title: 'Eventoken - Account', name:null });
+});
+
+router.post('/manag/updateUser', async (req, res) => {
+  try {
+    const { userMetamaskAdr, userNickname, userName, userCity, userEmail } = req.body;
+
+    if (!userMetamaskAdr) {
+      return res.status(400).send('User MetaMask address is required.');
+    }
+
+    const updateFields = {};
+    if (userNickname) updateFields.userNickname = userNickname;
+    if (userName) updateFields.userName = userName;
+    if (userCity) updateFields.userCity = userCity;
+    if (userEmail) updateFields.userEmail = userEmail;
+
+    const result = await User.updateOne({ userMetamaskAdr }, updateFields, { upsert: true });
+
+    if (result.modifiedCount > 0 || result.upsertedCount > 0) {
+      res.status(200).send('Profile updated successfully!');
+    } else {
+      res.status(400).send('No changes detected.');
+    }
+  } catch (error) {
+    console.error('Error updating user details:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
 // GET Check Ticket page and validate ticket
 router.get('/checkTicket', async (req, res) => {
   const ticketId = req.query.ticketId;
