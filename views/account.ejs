@@ -96,6 +96,13 @@
                         myEventButton.href = "/manag/myevents";
                         document.getElementById("buttonContainer").appendChild(myEventButton);
 
+                        // Add button to redirect to manag/updateUser.ejs
+                        const updateUserButton = document.createElement("a");
+                        updateUserButton.textContent = "Update Profile";
+                        updateUserButton.classList.add("btn", "button-two-alt", "btn-sm", "m-2");
+                        updateUserButton.href = "/manag/updateUser";
+                        document.getElementById("buttonContainer").appendChild(updateUserButton);
+
                     } else {
                         account = null;
                         document.getElementById("userArea").innerHTML = "<strong>Status:</strong> Not connected to MetaMask";
