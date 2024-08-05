@@ -1,0 +1,23 @@
+<%- include('../partials/header.ejs') %>
+
+<body>
+  <div class="container mt-4">
+    <h1 class="text-center text-white"><i class="bi bi-check-circle first-color"></i> Check Ticket</h1>
+
+    <div class="text-center text-white mt-4">
+      <p>Are you sure you want to validate this ticket?</p>
+      <p>Ticket ID: <strong><%= ticketId %></strong></p>
+
+      <div class="d-flex justify-content-center">
+        <form action="/updateTicketStatus" method="POST" onsubmit="return confirm('Are you sure you want to validate this ticket?');">
+          <input type="hidden" name="ticketId" value="<%= ticketId %>">
+          <button type="submit" class="btn btn-primary">Yes, Validate Ticket</button>
+          <a href="/" class="btn btn-secondary ml-2">Cancel</a>
+        </form>
+      </div>
+    </div>
+  </div>
+
+</body>
+
+<%- include('../partials/footer.ejs') %>
