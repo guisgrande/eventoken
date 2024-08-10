@@ -3,7 +3,8 @@ body {
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font: "Josefin Sans", sans-serif !important;
+  font-family: "Josefin Sans", sans-serif;
+  font-style: normal;
 }
 
 a {
@@ -37,19 +38,19 @@ a {
 }
 
 .button-two {
-  background-color: none;
+  background-color: rgba(0, 0, 0, 0);
   border: 1px solid #005A5D !important;
   color: #005A5D;
 }
 
 .button-two:hover {
-  background-color: #005A5D;
-  border: 1px solid white;
+  background-color: #005A5D !important;
+  border: 1px solid rgb(177, 177, 177) !important;
   color: white;
 }
 
 .button-two-alt {
-  background-color: none;
+  background-color: rgba(0, 0, 0, 0);
   border: 1px solid #00F6FF !important;
   color: #00F6FF;
 }
