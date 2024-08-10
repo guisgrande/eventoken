@@ -1,115 +1,106 @@
 <%- include partials/header.ejs %>
 
-<body>
+<div class="text-center mt-4">
+    <h1><i class="bi bi-person-square first-color"></i> Account Details</h1>
+</div>
 
-  <div class="text-center mt-4">
-      <h1><i class="bi bi-person-square first-color"></i> Account Details</h1>
-  </div>
+<div class="d-flex justify-content-center mt-4 text-white">
+    <!--Connecting to MetaMask -->
+    <div id="readArea" class="bg-dark p-2 m-2 rounded d-flex align-items-center flex-column" style="width: 40rem;">
+        <div class="m-4 d-flex flex-column align-items-center">
+            <a id="connectBtn" class="btn btn-primary m-2" onclick="connectMetamask()">CONNECT TO METAMASK</a>
+            <p class="m-2" id="userArea"><strong>Status:</strong> Not connected to Metamask</p>
+        </div>
+    </div>
+</div>
 
-  <div class="d-flex justify-content-center mt-4 text-white">
-      <!--Connecting to MetaMask -->
-      <div id="readArea" class="bg-dark p-2 m-2 rounded d-flex align-items-center flex-column" style="width: 40rem;">
-          <div class="m-4 d-flex flex-column align-items-center">
-              <a id="connectBtn" class="btn btn-primary m-2" onclick="connectMetamask()">CONNECT TO METAMASK</a>
-              <p class="m-2" id="userArea"><strong>Status:</strong> Not connected to Metamask</p>
-          </div>
-      </div>
-  </div>
+<script>
 
-  <script>
+// Account variable
+let account;
 
-    // Account variable
-    let account;
+// Ethers.js provider variable
+let provider = new ethers.providers.Web3Provider(window.ethereum);
 
-    // Ethers.js provider variable
-    let provider = new ethers.providers.Web3Provider(window.ethereum);
-
-    // Connect to MetaMask function.
-    const connectMetamask = async () => {
-      if (typeof window.ethereum !== "undefined") {
-        try {
-          const accounts = await ethereum.request({ method: "eth_requestAccounts" });
-          const userAddress = accounts[0];
-          // Redirect to manag/adduser.ejs with the MetaMask address as query paramter string
-          window.location.href = `/manag/adduser?userMetamaskAdr=${userAddress}`;
-        } catch (error) {
-          console.error('Error connecting to Metamask:', error);
-        }
-      } else {
-        console.error('MetaMask not detected.');
-      }
+// Connect to MetaMask function.
+const connectMetamask = async () => {
+    if (typeof window.ethereum !== "undefined") {
+    try {
+        const accounts = await ethereum.request({ method: "eth_requestAccounts" });
+        const userAddress = accounts[0];
+        // Redirect to manag/adduser.ejs with the MetaMask address as query paramter string
+        window.location.href = `/manag/adduser?userMetamaskAdr=${userAddress}`;
+    } catch (error) {
+        console.error('Error connecting to Metamask:', error);
     }
+    } else {
+    console.error('MetaMask not detected.');
+    }
+}
 
-    // Update the account status and details after verifying (Eventlistener)
-    const updateAccount = async () => {
-        if (typeof window.ethereum !== "undefined") {
-            try {
-                const accounts = await ethereum.request({ method: "eth_accounts" });
-                if (accounts.length > 0) {
-                    const userAddress = accounts[0];
-                    const response = await fetch(`/users?userMetamaskAdr=${userAddress}`);
-                    if (response.ok) {
-                        const userData = await response.json();
-                        account = userData.userMetamaskAdr;
-                        const userName = userData.userName || 'Not provided';
-                        const userNickname = userData.userNickname || 'Not provided';
-                        const userCity = userData.userCity || 'Not provided';
-                        const userEmail = userData.userEmail || 'Not provided';
-                        console.log("Account: " + account);
-                        console.log("userName: " + userName);
+// Update the account status and details after verifying (Eventlistener)
+const updateAccount = async () => {
+    if (typeof window.ethereum !== "undefined") {
+        try {
+            const accounts = await ethereum.request({ method: "eth_accounts" });
+            if (accounts.length > 0) {
+                const userAddress = accounts[0];
+                const response = await fetch(`/users?userMetamaskAdr=${userAddress}`);
+                if (response.ok) {
+                    const userData = await response.json();
+                    account = userData.userMetamaskAdr;
+                    const userName = userData.userName || 'Not provided';
+                    const userNickname = userData.userNickname || 'Not provided';
+                    const userCity = userData.userCity || 'Not provided';
+                    const userEmail = userData.userEmail || 'Not provided';
+                    console.log("Account: " + account);
+                    console.log("userName: " + userName);
 
-                        document.getElementById("userArea").innerHTML = `
-                            <strong>User Account:</strong> ${account}<br>
-                            <strong>Name:</strong> ${userName}<br>
-                            <strong>Nickname:</strong> ${userNickname}<br>
-                            <strong>City:</strong> ${userCity}<br>
-                            <strong>Email:</strong> ${userEmail}
-                        `;
-                        document.getElementById("connectBtn").textContent = "Successfully connected";
-                        document.getElementById("connectBtn").classList.remove("btn", "btn-primary");
-                        document.getElementById("connectBtn").classList.add("third-back", "p-2", "rounded");
+                    document.getElementById("userArea").innerHTML = `
+                        <strong>User Account:</strong> ${account}<br>
+                        <strong>Name:</strong> ${userName}<br>
+                        <strong>Nickname:</strong> ${userNickname}<br>
+                        <strong>City:</strong> ${userCity}<br>
+                        <strong>Email:</strong> ${userEmail}
+                    `;
+                    document.getElementById("connectBtn").textContent = "Successfully connected";
+                    document.getElementById("connectBtn").classList.remove("btn", "btn-primary");
+                    document.getElementById("connectBtn").classList.add("third-back", "p-2", "rounded");
 
-                        // Add a new div to hold the new buttons
-                        const divButton = document.createElement("div");
-                        divButton.classList.add("d-flex", "flex-row", "m-2");
-                        divButton.id = "buttonContainer";
-                        document.getElementById("readArea").appendChild(divButton);
+                    // Add a new div to hold the new buttons
+                    const divButton = document.createElement("div");
+                    divButton.classList.add("d-flex", "flex-row", "m-2");
+                    divButton.id = "buttonContainer";
+                    document.getElementById("readArea").appendChild(divButton);
 
-                        // Add button to redirect to tickets.ejs
-                        const ticketsButton = document.createElement("a");
-                        ticketsButton.textContent = "Go to My Tickets";
-                        ticketsButton.classList.add("btn", "button-one", "btn-sm", "m-2");
-                        ticketsButton.href = "/tickets";
-                        document.getElementById("buttonContainer").appendChild(ticketsButton);
+                    // Add button to redirect to tickets.ejs
+                    const ticketsButton = document.createElement("a");
+                    ticketsButton.textContent = "Go to My Tickets";
+                    ticketsButton.classList.add("btn", "button-one", "btn-sm", "m-2");
+                    ticketsButton.href = "/tickets";
+                    document.getElementById("buttonContainer").appendChild(ticketsButton);
 
-                        // Add button to redirect to manag/addevent.ejs
-                        const addEventButton = document.createElement("a");
-                        addEventButton.textContent = "Create New Event";
-                        addEventButton.classList.add("btn", "button-one", "btn-sm", "m-2");
-                        addEventButton.href = "/manag/addevent";
-                        document.getElementById("buttonContainer").appendChild(addEventButton);
+                    // Add button to redirect to manag/addevent.ejs
+                    const addEventButton = document.createElement("a");
+                    addEventButton.textContent = "Create New Event";
+                    addEventButton.classList.add("btn", "button-one", "btn-sm", "m-2");
+                    addEventButton.href = "/manag/addevent";
+                    document.getElementById("buttonContainer").appendChild(addEventButton);
 
-                        // Add button to redirect to manag/myevents.ejs
-                        const myEventButton = document.createElement("a");
-                        myEventButton.textContent = "Go to My Events";
-                        myEventButton.classList.add("btn", "button-one", "btn-sm", "m-2");
-                        myEventButton.href = "/manag/myevents";
-                        document.getElementById("buttonContainer").appendChild(myEventButton);
+                    // Add button to redirect to manag/myevents.ejs
+                    const myEventButton = document.createElement("a");
+                    myEventButton.textContent = "Go to My Events";
+                    myEventButton.classList.add("btn", "button-one", "btn-sm", "m-2");
+                    myEventButton.href = "/manag/myevents";
+                    document.getElementById("buttonContainer").appendChild(myEventButton);
 
-                        // Add button to redirect to manag/updateUser.ejs
-                        const updateUserButton = document.createElement("a");
-                        updateUserButton.textContent = "Update Profile";
-                        updateUserButton.classList.add("btn", "button-two-alt", "btn-sm", "m-2");
-                        updateUserButton.href = "/manag/updateUser";
-                        document.getElementById("buttonContainer").appendChild(updateUserButton);
+                    // Add button to redirect to manag/updateUser.ejs
+                    const updateUserButton = document.createElement("a");
+                    updateUserButton.textContent = "Update Profile";
+                    updateUserButton.classList.add("btn", "button-two-alt", "btn-sm", "m-2");
+                    updateUserButton.href = "/manag/updateUser";
+                    document.getElementById("buttonContainer").appendChild(updateUserButton);
 
-                    } else {
-                        account = null;
-                        document.getElementById("userArea").innerHTML = "<strong>Status:</strong> Not connected to MetaMask";
-                        document.getElementById("connectBtn").textContent = "CONNECT TO METAMASK";
-                        document.getElementById("connectBtn").classList.remove("bg-success", "p-2", "rounded");
-                        document.getElementById("connectBtn").classList.add("btn", "btn-primary");
-                    }
                 } else {
                     account = null;
                     document.getElementById("userArea").innerHTML = "<strong>Status:</strong> Not connected to MetaMask";
@@ -117,31 +108,36 @@
                     document.getElementById("connectBtn").classList.remove("bg-success", "p-2", "rounded");
                     document.getElementById("connectBtn").classList.add("btn", "btn-primary");
                 }
-            } catch (error) {
-                console.error('Error updating account:', error);
+            } else {
                 account = null;
                 document.getElementById("userArea").innerHTML = "<strong>Status:</strong> Not connected to MetaMask";
                 document.getElementById("connectBtn").textContent = "CONNECT TO METAMASK";
                 document.getElementById("connectBtn").classList.remove("bg-success", "p-2", "rounded");
                 document.getElementById("connectBtn").classList.add("btn", "btn-primary");
             }
-        } else {
-            console.error('MetaMask not detected.');
+        } catch (error) {
+            console.error('Error updating account:', error);
             account = null;
-            document.getElementById("userArea").innerHTML = "<strong>Status:</strong> MetaMask not detected";
+            document.getElementById("userArea").innerHTML = "<strong>Status:</strong> Not connected to MetaMask";
             document.getElementById("connectBtn").textContent = "CONNECT TO METAMASK";
             document.getElementById("connectBtn").classList.remove("bg-success", "p-2", "rounded");
             document.getElementById("connectBtn").classList.add("btn", "btn-primary");
         }
+    } else {
+        console.error('MetaMask not detected.');
+        account = null;
+        document.getElementById("userArea").innerHTML = "<strong>Status:</strong> MetaMask not detected";
+        document.getElementById("connectBtn").textContent = "CONNECT TO METAMASK";
+        document.getElementById("connectBtn").classList.remove("bg-success", "p-2", "rounded");
+        document.getElementById("connectBtn").classList.add("btn", "btn-primary");
     }
+}
 
-    // EventListners to Update the account data after load the page
-      window.addEventListener('load', async () => {
-          await updateAccount();
-      });
+// EventListners to Update the account data after load the page
+    window.addEventListener('load', async () => {
+        await updateAccount();
+    });
 
-  </script>
-
-</body>
+</script>
 
 <%- include partials/footer.ejs %>

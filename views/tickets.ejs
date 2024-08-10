@@ -1,68 +1,65 @@
 <%- include partials/header.ejs %>
 
-<body>
-  <div class="text-center m-4">
-    <h1><i class="bi bi-ticket-perforated first-color"></i> My Tickets</h1>
-    <p>All your tickets in one place.</p>
-  </div>
+<div class="text-center m-4">
+  <h1><i class="bi bi-ticket-perforated first-color"></i> My Tickets</h1>
+  <p>All your tickets in one place.</p>
+</div>
 
-  <!-- Element to display the list of tickets -->
-  <div class="d-flex justify-content-center">
-    <ul id="ticketList" class="list-group col-9"></ul>
-  </div>
+<!-- Element to display the list of tickets -->
+<div class="d-flex justify-content-center">
+  <ul id="ticketList" class="list-group col-9"></ul>
+</div>
 
-  <!-- Modal for entering the recipient's address -->
-  <div class="modal" id="transferModal" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">Transfer Ticket</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <form id="transferForm">
-            <div class="form-group">
-              <label for="recipientAddress">Recipient Address</label>
-              <input type="text" class="form-control" id="recipientAddress" required>
-              <input type="hidden" id="transferTicketId">
-            </div>
-            <button type="submit" class="btn button-one">Transfer</button>
-          </form>
-        </div>
+<!-- Modal for entering the recipient's address -->
+<div class="modal" id="transferModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Transfer Ticket</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="transferForm">
+          <div class="form-group">
+            <label for="recipientAddress">Recipient Address</label>
+            <input type="text" class="form-control" id="recipientAddress" required>
+            <input type="hidden" id="transferTicketId">
+          </div>
+          <button type="submit" class="btn button-one">Transfer</button>
+        </form>
       </div>
     </div>
   </div>
+</div>
 
-  <!-- Modal to list a ticket for sale -->
-  <div class="modal fade" id="listTicketModal" tabindex="-1" role="dialog" aria-labelledby="listTicketModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="listTicketModalLabel">List Ticket for Sale</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <form id="listTicketForm">
-            <div class="form-group">
-              <label for="ticketPrice">Ticket price (ETH)</label>
-              <input type="number" step="0.01" min="0" class="form-control" id="ticketPrice" placeholder="Enter ticket price" required>
-              <input type="hidden" id="sellTicketId">
-            </div>
-          </form>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn button-two" data-dismiss="modal">Close</button>
-          <button type="button" class="btn button-one" onclick="listTicketForSale()">List for sale</button>
-        </div>
+<!-- Modal to list a ticket for sale -->
+<div class="modal fade" id="listTicketModal" tabindex="-1" role="dialog" aria-labelledby="listTicketModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="listTicketModalLabel">List Ticket for Sale</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="listTicketForm">
+          <div class="form-group">
+            <label for="ticketPrice">Ticket price (ETH)</label>
+            <input type="number" step="0.01" min="0" class="form-control" id="ticketPrice" placeholder="Enter ticket price" required>
+            <input type="hidden" id="sellTicketId">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn button-two" data-dismiss="modal">Close</button>
+        <button type="button" class="btn button-one" onclick="listTicketForSale()">List for sale</button>
       </div>
     </div>
   </div>
-
-</body>
+</div>
 
 <script>
   async function loadTickets() {

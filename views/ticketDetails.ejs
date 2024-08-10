@@ -1,160 +1,159 @@
 <%- include partials/header.ejs %>
 
-<body>
-  <div class="text-center m-4">
-    <h1><i class="bi bi-ticket-perforated-fill first-color"></i> Ticket Details</h1>
-    <p>Details of your selected ticket.</p>
-  </div>
+<div class="text-center m-4">
+  <h1><i class="bi bi-ticket-perforated-fill first-color"></i> Ticket Details</h1>
+  <p>Details of your selected ticket.</p>
+</div>
 
-  <div id="ticketDetails" class="d-flex justify-content-center m-2"></div>
-  <div id="eventDetails" class="d-flex justify-content-center m-2"></div>
+<div id="ticketDetails" class="d-flex justify-content-center m-2"></div>
+<div id="eventDetails" class="d-flex justify-content-center m-2"></div>
 
-  <!-- QR Code Section -->
-  <div class="text-center m-4 d-flex justify-content-center">
-    <div class="bg-dark p-4 col-4 rounded">
-      <button id="toggleQRCodeBtn" class="btn button-two m-2">Show QR Code</button>
-      <div id="qrCodeContainer" class="m-2 d-flex justify-content-center">
-        <i id="hideQrCode" class="bi bi-eye-slash first-color" style="font-size: 150px; height: 150px;"></i>
-        <img id="qrCode" src="" alt="QR Code" />
-      </div>
+<!-- QR Code Section -->
+<div class="text-center m-4 d-flex justify-content-center">
+  <div class="bg-dark p-4 col-4 rounded">
+    <button id="toggleQRCodeBtn" class="btn button-two m-2">Show QR Code</button>
+    <div id="qrCodeContainer" class="m-2 d-flex justify-content-center">
+      <i id="hideQrCode" class="bi bi-eye-slash first-color" style="font-size: 150px; height: 150px;"></i>
+      <img id="qrCode" src="custom" alt="QR Code">
     </div>
   </div>
+</div>
 
-  <script>
-    async function loadTicketDetails() {
-      const urlParams = new URLSearchParams(window.location.search);
-      const ticketId = urlParams.get('ticketId');
+<script>
+  async function loadTicketDetails() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const ticketId = urlParams.get('ticketId');
 
-      if (!ticketId) {
-        alert('Ticket ID is missing!');
-        return;
-      }
-
-      try {
-        await window.ethereum.request({ method: 'eth_requestAccounts' });
-
-        const provider = new ethers.providers.Web3Provider(window.ethereum);
-        const signer = provider.getSigner();
-        const contract = new ethers.Contract(contractAddress, contractABI, signer);
-
-        const eventId = await contract.getEventIdByTicket(ticketId);
-        const eventDetails = await contract.getEventDetails(eventId);
-
-        const ticketInfo = {
-          id: ticketId,
-          eventName: eventDetails[1],
-          eventDetails: eventDetails[2],
-          totalTickets: eventDetails[3],
-          price: eventDetails[4],
-          eventImage: eventDetails[5],
-          ticketImage: eventDetails[6],
-          ticketsSold: eventDetails[8]
-        };
-
-        const ticketDetailsContainer = document.getElementById('ticketDetails');
-        const eventDetailsContainer = document.getElementById('eventDetails');
-
-        const detailCardTicket = document.createElement('div');
-        detailCardTicket.classList.add('card', 'bg-dark', 'text-white', 'col-7');
-
-        const detailCardEvent = document.createElement('div');
-        detailCardEvent.classList.add('card', 'bg-dark', 'text-white', 'col-7');
-
-        const cardBodyTicket = document.createElement('div');
-        cardBodyTicket.classList.add('card-body', 'd-flex', 'flex-column', 'justify-content-center', 'align-items-center');
-
-        const cardBodyEvent = document.createElement('div');
-        cardBodyEvent.classList.add('card-body', 'd-flex', 'flex-column', 'justify-content-center', 'align-items-center');
-
-        const eventNameElement = document.createElement('h3');
-        eventNameElement.classList.add('m-2');
-        eventNameElement.textContent = `Event Name: ${ticketInfo.eventName}`;
-
-        const eventDetailsElement = document.createElement('p');
-        eventDetailsElement.classList.add('m-2');
-        eventDetailsElement.textContent = `Details: ${ticketInfo.eventDetails}`;
-
-        const ticketIdElement = document.createElement('p');
-        ticketIdElement.classList.add('m-2');
-        ticketIdElement.textContent = `Ticket ID: ${ticketInfo.id}`;
-
-        const priceElement = document.createElement('p');
-        priceElement.classList.add('m-2');
-        priceElement.textContent = `Price: ${ethers.utils.formatEther(ticketInfo.price)} ETH`;
-
-        const eventImageElement = document.createElement('img');
-        eventImageElement.classList.add('m-2');
-        eventImageElement.src = ticketInfo.eventImage;
-        eventImageElement.alt = 'Event Image';
-        eventImageElement.style.maxWidth = '40%';
-
-        const ticketImageElement = document.createElement('img');
-        ticketImageElement.classList.add('m-2');
-        ticketImageElement.src = ticketInfo.ticketImage;
-        ticketImageElement.alt = 'Ticket Image';
-        ticketImageElement.style.maxWidth = '50%';
-
-        const ticketUsedElement = document.createElement('p');
-        ticketUsedElement.classList.add('m-2');
-        ticketUsedElement.innerHTML = 'Used: <%= ticket.ticketUsed ? 'Yes' : 'No' %>';
-        
-
-        cardBodyTicket.appendChild(ticketImageElement);
-        cardBodyTicket.appendChild(ticketIdElement);
-        cardBodyTicket.appendChild(ticketUsedElement);
-        cardBodyTicket.appendChild(priceElement);
-
-        cardBodyEvent.appendChild(eventImageElement);
-        cardBodyEvent.appendChild(eventNameElement);
-        cardBodyEvent.appendChild(eventDetailsElement);
-
-        detailCardTicket.appendChild(cardBodyTicket);
-        detailCardEvent.appendChild(cardBodyEvent);
-
-        ticketDetailsContainer.appendChild(detailCardTicket);
-        eventDetailsContainer.appendChild(detailCardEvent);
-
-        // Set QR code URL
-        const qrCodeContainer = document.getElementById('qrCodeContainer');
-        const qrCodeImage = document.getElementById('qrCode');
-        const qrIcon = document.getElementById('hideQrCode');
-        
-      // Set QR code URL
-      const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=/checkTicket?ticketId=${ticketId}`;
-      qrCodeImage.src = qrCodeUrl;
-
-      // Initialize QR code visibility
-      qrCodeImage.classList.add('element-hidden');
-      qrIcon.classList.add('element-show');
-      document.getElementById('toggleQRCodeBtn').textContent = 'Show QR Code';
-
-      // Toggle QR code visibility
-      document.getElementById('toggleQRCodeBtn').addEventListener('click', () => {
-        const isHidden = qrCodeImage.classList.contains('element-hidden');
-        
-        if (isHidden) {
-          qrCodeImage.classList.remove('element-hidden');
-          qrCodeImage.classList.add('element-show');
-          qrIcon.classList.remove('element-show');
-          qrIcon.classList.add('element-hidden');
-          document.getElementById('toggleQRCodeBtn').textContent = 'Hide QR Code';
-        } else {
-          qrCodeImage.classList.remove('element-show');
-          qrCodeImage.classList.add('element-hidden');
-          qrIcon.classList.remove('element-hidden');
-          qrIcon.classList.add('element-show');
-          document.getElementById('toggleQRCodeBtn').textContent = 'Show QR Code';
-        }
-      });
-
-
-      } catch (error) {
-        console.error('Error loading ticket details:', error);
-        alert('Error loading ticket details. Check the console for more details.');
-      }
+    if (!ticketId) {
+      alert('Ticket ID is missing!');
+      return;
     }
 
-    window.onload = loadTicketDetails;
-  </script>
+    try {
+      await window.ethereum.request({ method: 'eth_requestAccounts' });
+
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
+      const contract = new ethers.Contract(contractAddress, contractABI, signer);
+
+      const eventId = await contract.getEventIdByTicket(ticketId);
+      const eventDetails = await contract.getEventDetails(eventId);
+
+      const ticketInfo = {
+        id: ticketId,
+        eventName: eventDetails[1],
+        eventDetails: eventDetails[2],
+        totalTickets: eventDetails[3],
+        price: eventDetails[4],
+        eventImage: eventDetails[5],
+        ticketImage: eventDetails[6],
+        ticketsSold: eventDetails[8]
+      };
+
+      const ticketDetailsContainer = document.getElementById('ticketDetails');
+      const eventDetailsContainer = document.getElementById('eventDetails');
+
+      const detailCardTicket = document.createElement('div');
+      detailCardTicket.classList.add('card', 'bg-dark', 'text-white', 'col-7');
+
+      const detailCardEvent = document.createElement('div');
+      detailCardEvent.classList.add('card', 'bg-dark', 'text-white', 'col-7');
+
+      const cardBodyTicket = document.createElement('div');
+      cardBodyTicket.classList.add('card-body', 'd-flex', 'flex-column', 'justify-content-center', 'align-items-center');
+
+      const cardBodyEvent = document.createElement('div');
+      cardBodyEvent.classList.add('card-body', 'd-flex', 'flex-column', 'justify-content-center', 'align-items-center');
+
+      const eventNameElement = document.createElement('h3');
+      eventNameElement.classList.add('m-2');
+      eventNameElement.textContent = `Event Name: ${ticketInfo.eventName}`;
+
+      const eventDetailsElement = document.createElement('p');
+      eventDetailsElement.classList.add('m-2');
+      eventDetailsElement.textContent = `Details: ${ticketInfo.eventDetails}`;
+
+      const ticketIdElement = document.createElement('p');
+      ticketIdElement.classList.add('m-2');
+      ticketIdElement.textContent = `Ticket ID: ${ticketInfo.id}`;
+
+      const priceElement = document.createElement('p');
+      priceElement.classList.add('m-2');
+      priceElement.textContent = `Price: ${ethers.utils.formatEther(ticketInfo.price)} ETH`;
+
+      const eventImageElement = document.createElement('img');
+      eventImageElement.classList.add('m-2');
+      eventImageElement.src = ticketInfo.eventImage;
+      eventImageElement.alt = 'Event Image';
+      eventImageElement.style.maxWidth = '40%';
+
+      const ticketImageElement = document.createElement('img');
+      ticketImageElement.classList.add('m-2');
+      ticketImageElement.src = ticketInfo.ticketImage;
+      ticketImageElement.alt = 'Ticket Image';
+      ticketImageElement.style.maxWidth = '50%';
+
+      const ticketUsedElement = document.createElement('p');
+      ticketUsedElement.classList.add('m-2');
+      ticketUsedElement.innerHTML = 'Used: <%= ticket.ticketUsed ? 'Yes' : 'No' %>';
+      
+
+      cardBodyTicket.appendChild(ticketImageElement);
+      cardBodyTicket.appendChild(ticketIdElement);
+      cardBodyTicket.appendChild(ticketUsedElement);
+      cardBodyTicket.appendChild(priceElement);
+
+      cardBodyEvent.appendChild(eventImageElement);
+      cardBodyEvent.appendChild(eventNameElement);
+      cardBodyEvent.appendChild(eventDetailsElement);
+
+      detailCardTicket.appendChild(cardBodyTicket);
+      detailCardEvent.appendChild(cardBodyEvent);
+
+      ticketDetailsContainer.appendChild(detailCardTicket);
+      eventDetailsContainer.appendChild(detailCardEvent);
+
+      // Set QR code URL
+      const qrCodeContainer = document.getElementById('qrCodeContainer');
+      const qrCodeImage = document.getElementById('qrCode');
+      const qrIcon = document.getElementById('hideQrCode');
+      
+    // Set QR code URL
+    const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=/checkTicket?ticketId=${ticketId}`;
+    qrCodeImage.src = qrCodeUrl;
+
+    // Initialize QR code visibility
+    qrCodeImage.classList.add('element-hidden');
+    qrIcon.classList.add('element-show');
+    document.getElementById('toggleQRCodeBtn').textContent = 'Show QR Code';
+
+    // Toggle QR code visibility
+    document.getElementById('toggleQRCodeBtn').addEventListener('click', () => {
+      const isHidden = qrCodeImage.classList.contains('element-hidden');
+      
+      if (isHidden) {
+        qrCodeImage.classList.remove('element-hidden');
+        qrCodeImage.classList.add('element-show');
+        qrIcon.classList.remove('element-show');
+        qrIcon.classList.add('element-hidden');
+        document.getElementById('toggleQRCodeBtn').textContent = 'Hide QR Code';
+      } else {
+        qrCodeImage.classList.remove('element-show');
+        qrCodeImage.classList.add('element-hidden');
+        qrIcon.classList.remove('element-hidden');
+        qrIcon.classList.add('element-show');
+        document.getElementById('toggleQRCodeBtn').textContent = 'Show QR Code';
+      }
+    });
+
+
+    } catch (error) {
+      console.error('Error loading ticket details:', error);
+      alert('Error loading ticket details. Check the console for more details.');
+    }
+  }
+
+  window.onload = loadTicketDetails;
+</script>
 
 <%- include partials/footer.ejs %>

@@ -1,15 +1,12 @@
 <%- include partials/header.ejs %>
 
-<body>
-  <h1 class="text-center m-4"><i class="bi bi-receipt-cutoff first-color"></i> Resale Tickets</h1>
-  <p class="text-center m-4">Your second chance to get the ticket for the Events.</p>
+<h1 class="text-center m-4"><i class="bi bi-receipt-cutoff first-color"></i> Resale Tickets</h1>
+<p class="text-center m-4">Your second chance to get the ticket for the Events.</p>
 
-  <!-- Element to display the list of tickets for resale -->
-  <div class="d-flex justify-content-center">
-    <ul id="resaleTicketList" class="list-group col-md-8"></ul>
-  </div>
-
-</body>
+<!-- Element to display the list of tickets for resale -->
+<div class="d-flex justify-content-center">
+  <ul id="resaleTicketList" class="list-group col-md-8"></ul>
+</div>
 
 <script>
   async function loadResaleTickets() {

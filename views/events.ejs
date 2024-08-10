@@ -1,116 +1,114 @@
 <%- include partials/header.ejs %>
 
-<body>
-  <h1 class="text-center m-4"><i class="bi bi-card-list first-color"></i> Event List</h1>
-  <div id="eventsContainer" class="d-flex justify-content-center flex-column"></div>
-  <div class="d-flex justify-content-center">
-    <button id="loadMoreBtn" class="btn button-two mt-2" onclick="loadMoreEvents()">Load More</button>
-  </div>
+<h1 class="text-center m-4"><i class="bi bi-card-list first-color"></i> Event List</h1>
+<div id="eventsContainer" class="d-flex justify-content-center flex-column"></div>
+<div class="d-flex justify-content-center">
+<button id="loadMoreBtn" class="btn button-two mt-2" onclick="loadMoreEvents()">Load More</button>
+</div>
 
-  <script>
-      let currentIndex = 1; // Start index here.
-      const eventsPerPage = 6;
+<script>
+    let currentIndex = 1; // Start index here.
+    const eventsPerPage = 6;
 
-      async function loadMoreEvents() {
-          try {
-              await window.ethereum.request({ method: 'eth_requestAccounts' });
-              const provider = new ethers.providers.Web3Provider(window.ethereum);
-              const signer = provider.getSigner();
+    async function loadMoreEvents() {
+        try {
+            await window.ethereum.request({ method: 'eth_requestAccounts' });
+            const provider = new ethers.providers.Web3Provider(window.ethereum);
+            const signer = provider.getSigner();
 
-              const contract = new ethers.Contract(contractAddress, contractABI, signer);
+            const contract = new ethers.Contract(contractAddress, contractABI, signer);
 
-              const totalEvents = await contract.nextEventId();
-              const eventsContainer = document.getElementById('eventsContainer');
-              eventsContainer.innerHTML = ''; // Clears previous content
+            const totalEvents = await contract.nextEventId();
+            const eventsContainer = document.getElementById('eventsContainer');
+            eventsContainer.innerHTML = ''; // Clears previous content
 
-              for (let i = currentIndex; i < currentIndex + eventsPerPage && i < totalEvents; i++) {
-                  const event = await contract.events(i);
-                  const ticketsAvailable = await contract.ticketsAvailable(i);
+            for (let i = currentIndex; i < currentIndex + eventsPerPage && i < totalEvents; i++) {
+                const event = await contract.events(i);
+                const ticketsAvailable = await contract.ticketsAvailable(i);
 
-                  // Create the card element for each event
-                  const eventCard = document.createElement('div');
-                  eventCard.classList.add('m-4', 'p-0', 'row', 'g-0', 'text-white', 'rounded', 'd-flex', 'justify-content-center', 'aligne-item-center');
+                // Create the card element for each event
+                const eventCard = document.createElement('div');
+                eventCard.classList.add('m-4', 'p-0', 'row', 'g-0', 'text-white', 'rounded', 'd-flex', 'justify-content-center', 'aligne-item-center');
 
-                  // Create the internal structure of the card with the event details
-                  eventCard.innerHTML = `
-                  <div class="col-md-5 p-0 d-flex justify-content-center align-items-center">
-                      <img src="${event.eventImage}" class="p-0 img-fluid rounded-start" alt="Event Image">
-                  </div>
-                  <div class="col-md-5 bg-dark rounded">
-                    <div class="card-body">
-                        <h5 class="card-title">${event.name}</h5>
-                        <p class="card-text">${event.details}</p>
-                        <div class="d-flex flex-row align-items-center">
-                            <div class="col-6">
-                                <ul class="list-group list-group-flush rounded" style="font-size: 14px;">
-                                    <li class="list-group-item bg-dark">Total Tickets: ${event.totalTickets}</li>
-                                    <li class="list-group-item bg-dark">Price: ${ethers.utils.formatEther(event.price)} ETH</li>
-                                    <li class="list-group-item bg-dark">Tickets Sold: ${event.ticketsSold}</li>
-                                    <li class="list-group-item bg-dark">Tickets Available: ${ticketsAvailable}</li>
-                                </ul>
-                            </div>
-                            <div class="col-4 p-2 border-one">
-                                <img src="${event.ticketImage}" class="p-0 img-fluid rounded-start" alt="Event Image">
-                            </div>
+                // Create the internal structure of the card with the event details
+                eventCard.innerHTML = `
+                <div class="col-md-5 p-0 d-flex justify-content-center align-items-center">
+                    <img src="${event.eventImage}" class="p-0 img-fluid rounded-start" alt="Event Image">
+                </div>
+                <div class="col-md-5 bg-dark rounded">
+                <div class="card-body">
+                    <h5 class="card-title">${event.name}</h5>
+                    <p class="card-text">${event.details}</p>
+                    <div class="d-flex flex-row align-items-center">
+                        <div class="col-6">
+                            <ul class="list-group list-group-flush rounded" style="font-size: 14px;">
+                                <li class="list-group-item bg-dark">Total Tickets: ${event.totalTickets}</li>
+                                <li class="list-group-item bg-dark">Price: ${ethers.utils.formatEther(event.price)} ETH</li>
+                                <li class="list-group-item bg-dark">Tickets Sold: ${event.ticketsSold}</li>
+                                <li class="list-group-item bg-dark">Tickets Available: ${ticketsAvailable}</li>
+                            </ul>
                         </div>
-                        <button class="btn button-one mt-2" onclick="buyTicket(${event.eventId})">Buy Ticket</button>
+                        <div class="col-4 p-2 border-one">
+                            <img src="${event.ticketImage}" class="p-0 img-fluid rounded-start" alt="Event Image">
+                        </div>
                     </div>
-                  </div>
-                  `;
+                    <button class="btn button-one mt-2" onclick="buyTicket(${event.eventId})">Buy Ticket</button>
+                </div>
+                </div>
+                `;
 
-                  // Add the event card to the event container
-                  eventsContainer.appendChild(eventCard);
-              }
+                // Add the event card to the event container
+                eventsContainer.appendChild(eventCard);
+            }
 
-              currentIndex += eventsPerPage;
-              if (currentIndex >= totalEvents) {
-                  document.getElementById('loadMoreBtn').style.display = 'none';
-              }
-          } catch (error) {
-              console.error('Error loading events: ', error);
-              alert('Error loading events.');
-          }
-      }
+            currentIndex += eventsPerPage;
+            if (currentIndex >= totalEvents) {
+                document.getElementById('loadMoreBtn').style.display = 'none';
+            }
+        } catch (error) {
+            console.error('Error loading events: ', error);
+            alert('Error loading events.');
+        }
+    }
 
-      async function buyTicket(eventId) {
-          try {
-              const provider = new ethers.providers.Web3Provider(window.ethereum);
-              const signer = provider.getSigner();
+    async function buyTicket(eventId) {
+        try {
+            const provider = new ethers.providers.Web3Provider(window.ethereum);
+            const signer = provider.getSigner();
 
-              const contract = new ethers.Contract(contractAddress, contractABI, signer);
+            const contract = new ethers.Contract(contractAddress, contractABI, signer);
 
-              // Requests the desired number of tickets from the user
-              const quantity = prompt('How many tickets you want to buy?', '1');
-              if (!quantity || isNaN(quantity)) {
-                  throw new Error('Invalid quantity.');
-              }
+            // Requests the desired number of tickets from the user
+            const quantity = prompt('How many tickets you want to buy?', '1');
+            if (!quantity || isNaN(quantity)) {
+                throw new Error('Invalid quantity.');
+            }
 
-              console.log("Event ID:" + eventId)
-              // Get the event price directly from the contract
-              const event = await contract.events(eventId);
-              const ticketPrice = event.price;
-              console.log("Event:" + event);
-              console.log("Ticket price:" + ticketPrice);
+            console.log("Event ID:" + eventId)
+            // Get the event price directly from the contract
+            const event = await contract.events(eventId);
+            const ticketPrice = event.price;
+            console.log("Event:" + event);
+            console.log("Ticket price:" + ticketPrice);
 
-              // Calculate the total price of the tickets the user wants to buy
-              const totalPrice = ticketPrice.mul(quantity);
-              console.log("Total price:" + totalPrice);
+            // Calculate the total price of the tickets the user wants to buy
+            const totalPrice = ticketPrice.mul(quantity);
+            console.log("Total price:" + totalPrice);
 
-              // Call to the purchaseTickets function from contract
-              const tx = await contract.purchaseTickets(eventId, quantity, { value: totalPrice });
-              await tx.wait();
-              
-              alert(`Tickets successfully bought for the event! Event ID: ${eventId}.`);
-              loadMoreEvents(); // Reloads the event list after purchase
-          } catch (error) {
-              console.error('Error while buying tickets: ', error);
-              alert('Error while buying tickets.');
-          }
-      }
+            // Call to the purchaseTickets function from contract
+            const tx = await contract.purchaseTickets(eventId, quantity, { value: totalPrice });
+            await tx.wait();
+            
+            alert(`Tickets successfully bought for the event! Event ID: ${eventId}.`);
+            loadMoreEvents(); // Reloads the event list after purchase
+        } catch (error) {
+            console.error('Error while buying tickets: ', error);
+            alert('Error while buying tickets.');
+        }
+    }
 
-      // Loads the first events when the page is loaded
-      document.addEventListener('DOMContentLoaded', loadMoreEvents);
-  </script>
-</body>
+    // Loads the first events when the page is loaded
+    document.addEventListener('DOMContentLoaded', loadMoreEvents);
+</script>
 
 <%- include partials/footer.ejs %>

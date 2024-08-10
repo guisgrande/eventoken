@@ -1,48 +1,46 @@
 <!-- views/manag/adduser.ejs -->
 <%- include('../partials/header.ejs') %>
 
-<body>
-  <div class="container mt-4">
-    <h5>Adding User...</h5>
-  </div>
+<div class="container mt-4">
+  <h5>Adding User...</h5>
+</div>
 
-  <script>
-    window.addEventListener('load', async () => {
-      // Search for paramters in the URL. Get the userMetamaskAdr value on it
-      const urlParams = new URLSearchParams(window.location.search);
-      const userMetamaskAdr = urlParams.get('userMetamaskAdr');
+<script>
+  window.addEventListener('load', async () => {
+    // Search for paramters in the URL. Get the userMetamaskAdr value on it
+    const urlParams = new URLSearchParams(window.location.search);
+    const userMetamaskAdr = urlParams.get('userMetamaskAdr');
 
-      if (userMetamaskAdr) {
-        try {
-          const response = await fetch(`/manag/adduser`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              userMetamaskAdr,
-              userNickname: 'NewUser' // Default unserNickName
-            })
-          });
+    if (userMetamaskAdr) {
+      try {
+        const response = await fetch(`/manag/adduser`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            userMetamaskAdr,
+            userNickname: 'NewUser' // Default unserNickName
+          })
+        });
 
-          const result = await response.json();
+        const result = await response.json();
 
-          if (response.ok) {
-            // Redirect back to account page. 
-            window.location.href = `/account?success=useradded&userID=${result.userID}`;
-          } else {
-            console.error('Error trying to add a new user:', result.message);
-            window.location.href = `/account?error=adduserfailed`;
-          }
-        } catch (error) {
-          console.error('Erro during new add creation:', error);
+        if (response.ok) {
+          // Redirect back to account page. 
+          window.location.href = `/account?success=useradded&userID=${result.userID}`;
+        } else {
+          console.error('Error trying to add a new user:', result.message);
           window.location.href = `/account?error=adduserfailed`;
         }
-      } else {
-        window.location.href = `/account?error=nouseraddress`;
+      } catch (error) {
+        console.error('Erro during new add creation:', error);
+        window.location.href = `/account?error=adduserfailed`;
       }
-    });
-  </script>
-</body>
+    } else {
+      window.location.href = `/account?error=nouseraddress`;
+    }
+  });
+</script>
 
 <%- include('../partials/footer.ejs') %>

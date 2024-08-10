@@ -1,89 +1,86 @@
 <%- include partials/header.ejs %>
 
-<body>
+<!-- Hero Section -->
+<div id="hero-container" class="card bg-dark text-white border-0 rounded-0 d-flex flex-row justify-content-around pt-4 pb-4">
 
-  <!-- Hero Section -->
-  <div id="hero-container" class="card bg-dark text-white border-0 rounded-0 d-flex flex-row justify-content-around pt-4 pb-4">
-
-    <div id="hero-image" style="width: 100%;" class="d-flex justify-content-center">
-      <img src="images/hero-eventoken.png" class="card-img rounded-0" alt="Eventoken Logo">
-    </div>
-
-    <div class="card-body d-flex flex-column justify-content-center align-items-center col-sm-5 m-4 p-4">
-      <div class="m-2">
-        <h1><%= title %></h1>
-        <p class="text-justify">Experience the future of event ticketing. Secure, transparent, and easy-to-use, our blockchain-based platform ensures authenticity and fairness in ticket distribution. Welcome to the new era of event participation.</p>
-      </div>
-    </div>
-
+  <div id="hero-image" style="width: 100%;" class="d-flex justify-content-center">
+    <img src="images/hero-eventoken.png" class="card-img rounded-0" alt="Eventoken Logo">
   </div>
 
-  <!-- About Section -->
-  <div class="p-4 d-flex flex-row align-items-center">
-    <div class="col-8">
-      <h2>About Eventoken</h2>
-      <p class="text-justify">Eventoken is a groundbreaking platform designed to transform the way you buy, sell, and manage event tickets. Leveraging the power of blockchain technology, Eventoken offers unparalleled security and transparency. Each ticket is minted as a unique non-fungible token (NFT), ensuring its authenticity and traceability. Our smart contracts automate and regulate ticket sales, preventing fraud and scalping while providing a seamless user experience. Whether you're an event organizer or an attendee, Eventoken makes ticketing simple, fair, and secure.</p>
-    </div>
-    <div class="col-4">
-      <img src="images/about-image.png" alt="About Eventoken icons image" style="width: 100%;">
+  <div class="card-body d-flex flex-column justify-content-center align-items-center col-sm-5 m-4 p-4">
+    <div class="m-2">
+      <h1><%= title %></h1>
+      <p class="text-justify">Experience the future of event ticketing. Secure, transparent, and easy-to-use, our blockchain-based platform ensures authenticity and fairness in ticket distribution. Welcome to the new era of event participation.</p>
     </div>
   </div>
 
-  <!-- How it Works Section -->
-  <div class="p-4 third-back text-white d-flex justify-content-center flex-column align-items-center">
-    <div class="col-6">
-      <h2 class="text-center">How Eventoken works</h2>
-      <p class="text-justify">Eventoken is a platform that connects to your MetaMask account, allowing you to either create and manage the sale of tickets for your own event or purchase tickets for events you want to attend. Here's how it works:</p>
-    </div>
+</div>
 
-    <div class="d-flex justify-content-center m-4 col-8">
-      <ul class="list-group col-8">
-        <li class="list-group-item bg-dark text-white m-2 rounded">
-          <i class="bi bi-wallet2 first-color icon-size"></i> <strong class="p-2">Connect Your MetaMask Account</strong><br> Securely connect your MetaMask wallet to Eventoken for seamless transactions and management.
-        </li>
-        <li class="list-group-item bg-dark text-white m-2 rounded">
-          <i class="bi bi-calendar-plus first-color icon-size"></i> <strong class="p-2">Create and Manage Events</strong><br> As an event organizer, you can easily create events, set ticket prices, and manage ticket sales all in one place.
-        </li>
-        <li class="list-group-item bg-dark text-white m-2 rounded">
-          <i class="bi bi-cart-check first-color icon-size"></i> <strong class="p-2">Buy Tickets</strong><br> Browse through a variety of events and purchase tickets directly through the platform using your MetaMask account.
-        </li>
-        <li class="list-group-item bg-dark text-white m-2 rounded">
-          <i class="bi bi-shield-lock first-color icon-size"></i> <strong class="p-2">Secure Transactions</strong><br> All transactions are processed securely through the blockchain, ensuring the safety and authenticity of your tickets.
-        </li>
-        <li class="list-group-item bg-dark text-white m-2 rounded">
-          <i class="bi bi-qr-code-scan first-color icon-size"></i> <strong class="p-2">Easy Check-In</strong><br> Use your digital ticket with a QR code for quick and easy entry to events.
-        </li>
-        <li class="list-group-item bg-dark text-white m-2 rounded">
-          <i class="bi bi-graph-up-arrow first-color icon-size"></i> <strong class="p-2">Track Sales and Attendance</strong><br> Organizers can track ticket sales and event attendance in real-time, making event management a breeze.
-        </li>
-      </ul>
-    </div>
+<!-- About Section -->
+<div class="p-4 d-flex flex-row align-items-center">
+  <div class="col-8">
+    <h2>About Eventoken</h2>
+    <p class="text-justify">Eventoken is a groundbreaking platform designed to transform the way you buy, sell, and manage event tickets. Leveraging the power of blockchain technology, Eventoken offers unparalleled security and transparency. Each ticket is minted as a unique non-fungible token (NFT), ensuring its authenticity and traceability. Our smart contracts automate and regulate ticket sales, preventing fraud and scalping while providing a seamless user experience. Whether you're an event organizer or an attendee, Eventoken makes ticketing simple, fair, and secure.</p>
+  </div>
+  <div class="col-4">
+    <img src="images/about-image.png" alt="About Eventoken icons image" style="width: 100%;">
+  </div>
+</div>
+
+<!-- How it Works Section -->
+<div class="p-4 third-back text-white d-flex justify-content-center flex-column align-items-center">
+  <div class="col-6">
+    <h2 class="text-center">How Eventoken works</h2>
+    <p class="text-justify">Eventoken is a platform that connects to your MetaMask account, allowing you to either create and manage the sale of tickets for your own event or purchase tickets for events you want to attend. Here's how it works:</p>
   </div>
 
-  <!-- Events Section -->
-  <div class="bg-dark text-white p-4 d-flex flex-row justify-content-end align-items-center">
-    <div class="col-4">
-      <img src="images/event-image.png" alt="Events icons image" style="width: 100%;">
-    </div>
-    <div class="col-8 text-end">
-      <h2>Events</h2>
-      <p class="text-justify">Explore a world of events with Eventoken. From concerts and sports matches to conferences and theater productions, find tickets to the most exciting happenings around you. Browse our curated list of events, secure your spot with authentic tickets, and get ready for unforgettable experiences. With Eventoken, you can trust that every ticket is genuine and every transaction is transparent.</p>
-      <a href="/events" class="btn btn-sm button-two-alt">Browse all events</a>
-    </div>
+  <div class="d-flex justify-content-center m-4 col-8">
+    <ul class="list-group col-8">
+      <li class="list-group-item bg-dark text-white m-2 rounded">
+        <i class="bi bi-wallet2 first-color icon-size"></i> <strong class="p-2">Connect Your MetaMask Account</strong><br> Securely connect your MetaMask wallet to Eventoken for seamless transactions and management.
+      </li>
+      <li class="list-group-item bg-dark text-white m-2 rounded">
+        <i class="bi bi-calendar-plus first-color icon-size"></i> <strong class="p-2">Create and Manage Events</strong><br> As an event organizer, you can easily create events, set ticket prices, and manage ticket sales all in one place.
+      </li>
+      <li class="list-group-item bg-dark text-white m-2 rounded">
+        <i class="bi bi-cart-check first-color icon-size"></i> <strong class="p-2">Buy Tickets</strong><br> Browse through a variety of events and purchase tickets directly through the platform using your MetaMask account.
+      </li>
+      <li class="list-group-item bg-dark text-white m-2 rounded">
+        <i class="bi bi-shield-lock first-color icon-size"></i> <strong class="p-2">Secure Transactions</strong><br> All transactions are processed securely through the blockchain, ensuring the safety and authenticity of your tickets.
+      </li>
+      <li class="list-group-item bg-dark text-white m-2 rounded">
+        <i class="bi bi-qr-code-scan first-color icon-size"></i> <strong class="p-2">Easy Check-In</strong><br> Use your digital ticket with a QR code for quick and easy entry to events.
+      </li>
+      <li class="list-group-item bg-dark text-white m-2 rounded">
+        <i class="bi bi-graph-up-arrow first-color icon-size"></i> <strong class="p-2">Track Sales and Attendance</strong><br> Organizers can track ticket sales and event attendance in real-time, making event management a breeze.
+      </li>
+    </ul>
   </div>
+</div>
 
-  <!-- Register / Login Section -->
-  <div class="p-4 d-flex flex-row align-items-center">
-    <div class="col-8">
-      <h2>Register/Login</h2>
-      <p class="text-justify">Ready to experience a new standard in event ticketing? Create your Eventoken account now and unlock access to secure, transparent, and fair ticketing. Whether you're looking to attend amazing events or organize them, Eventoken provides the tools you need. Sign up today and be part of the revolution in event management. Don't miss out – your next great event is just a click away!</p>
-      <a href="/account" class="btn btn-sm button-two">Access now</a>
-    </div>
-    <div class="col-4">
-      <img src="images/register-image.png" alt="Register icons image" style="width: 100%;">
-    </div>
+<!-- Events Section -->
+<div class="bg-dark text-white p-4 d-flex flex-row justify-content-end align-items-center">
+  <div class="col-4">
+    <img src="images/event-image.png" alt="Events icons image" style="width: 100%;">
   </div>
+  <div class="col-8 text-end">
+    <h2>Events</h2>
+    <p class="text-justify">Explore a world of events with Eventoken. From concerts and sports matches to conferences and theater productions, find tickets to the most exciting happenings around you. Browse our curated list of events, secure your spot with authentic tickets, and get ready for unforgettable experiences. With Eventoken, you can trust that every ticket is genuine and every transaction is transparent.</p>
+    <a href="/events" class="btn btn-sm button-two-alt">Browse all events</a>
+  </div>
+</div>
 
-</body>
+<!-- Register / Login Section -->
+<div class="p-4 d-flex flex-row align-items-center">
+  <div class="col-8">
+    <h2>Register/Login</h2>
+    <p class="text-justify">Ready to experience a new standard in event ticketing? Create your Eventoken account now and unlock access to secure, transparent, and fair ticketing. Whether you're looking to attend amazing events or organize them, Eventoken provides the tools you need. Sign up today and be part of the revolution in event management. Don't miss out – your next great event is just a click away!</p>
+    <a href="/account" class="btn btn-sm button-two">Access now</a>
+  </div>
+  <div class="col-4">
+    <img src="images/register-image.png" alt="Register icons image" style="width: 100%;">
+  </div>
+</div>
+
 
 <%- include partials/footer.ejs %>
